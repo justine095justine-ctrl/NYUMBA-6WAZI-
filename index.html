@@ -1,15 +1,33 @@
 <!DOCTYPE html>
 <html lang="sw">
 <head>
-  <meta charset="UTF-8">
-  <title>NYUMBA-6WAZI</title>
-  <style>
-    body { font-family: Arial; text-align: center; padding: 50px; background: #f0f0f0; }
-    h1 { color: #2c3e50; }
-  </style>
+<meta charset="UTF-8">
+<title>NYUMBA-6WAZI</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<style>
+body{background:#000;color:#fff;font-family:Arial;text-align:center;padding:20px}
+h1{color:red}
+.box{background:#111;padding:20px;border-radius:10px;max-width:400px;margin:20px auto}
+input,textarea{width:90%;padding:10px;margin:8px;background:#222;color:#fff;border:1px solid #444;border-radius:5px}
+button{background:#25D366;color:#fff;padding:12px 25px;border:none;border-radius:8px;font-weight:bold;cursor:pointer}
+button i{margin-right:5px}
+</style>
 </head>
 <body>
-  <h1>Karibu NYUMBA-6WAZI 🔥</h1>
-  <p>Website yako imefanikiwa kupanda bila password!</p>
+<h1><i class="fa-solid fa-house"></i> NYUMBA-6WAZI</h1>
+<div class="box">
+<h2><i class="fa-solid fa-message"></i> Tuma Ujumbe</h2>
+<input id="jina" placeholder="Andika Jina lako"><br>
+<textarea id="ujumbe" placeholder="Andika Ujumbe wako..." rows="3"></textarea><br>
+<button onclick="tuma()"><i class="fa-brands fa-whatsapp"></i> Tuma WhatsApp</button>
+</div>
+<script>
+function tuma(){
+let j=document.getElementById("jina").value;
+let u=document.getElementById("ujumbe").value;
+if(j==""||u==""){alert("Tafadhali jaza jina na ujumbe");return;}
+window.open("https://wa.me/255653243898text=*NYUMBA-6WAZI*%0AJina: "+j+"%0AUjumbe: "+u)
+}
+</script>
 </body>
 </html>
