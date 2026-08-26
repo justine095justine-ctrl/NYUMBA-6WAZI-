@@ -64,23 +64,26 @@
         <input type="password" id="password" placeholder="Weka Password">
         <button id="authBtn">Jisajili</button>
         <a class="toggle" id="toggleAuth">Una account? Ingia</a>
-        <div class="error" id="errorMsg"></div>    </div>
+        <div class="error" id="errorMsg"></div>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
         const firebaseConfig = {
-            apiKey: "WEKA_API_KEY_YAKO_HAPA",
-            authDomain: "nyumba-6wazi.firebaseapp.com",
-            projectId: "nyumba-6wazi",
-            storageBucket: "nyumba-6wazi.firebasestorage.app",
-            messagingSenderId: "401684834308",
-            appId: "1:401684834308:web:xxxxxxxxx"
+          apiKey: "AIzaSyANpw55jBWxMyf6AC1_y7m6idNYhLPyka0",
+          authDomain: "nyumba-6wazi.firebaseapp.com",
+          projectId: "nyumba-6wazi",
+          storageBucket: "nyumba-6wazi.firebasestorage.app",
+          messagingSenderId: "401684834308",
+          appId: "1:401684834308:web:cfeadb76f030283fca2d51"
         };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-        const db = firebase.firestore();        let isLogin = false;
+        const db = firebase.firestore();
+        
+        let isLogin = false;
         const authBtn = document.getElementById('authBtn');
         const toggleAuth = document.getElementById('toggleAuth');
         const errorMsg = document.getElementById('errorMsg');
