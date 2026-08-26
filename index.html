@@ -1,64 +1,106 @@
-cts that youfead..<!DOCTYPE html>
-<html lang="sw">
+<!DOCTYPE html>
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NYUMBA-6WAZI Login</title>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<style>
-body{font-family:sans-serif;text-align:center;padding:50px;background:#0d1117;color:white}
-.card{background:#161b22;padding:30px;border-radius:15px;max-width:400px;margin:auto}
-input,button{width:90%;padding:12px;margin:8px 0;border-radius:8px;border:none;font-size:16px}
-button{background:#238636;color:white;cursor:pointer;font-weight:bold}
-button:nth-child(4){background:#1f6feb}
-#msg{color:#f85149;margin-top:10px}
-</style>
+  <title>NYUMBA-6WAZI Login</title>
+  <style>
+    body {font-family: Arial; background: #25D366; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;}
+    .box {background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 350px; box-shadow: 0 5px 20px rgba(0,0,0,0.2);}
+    h2 {text-align: center; color: #25D366;}
+    input {width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;}
+    button {width: 100%; padding: 12px; background: #25D366; color: white; border: none; border-radius: 8px; font-size: 16px; margin-top: 10px;}
+    #message {text-align: center; margin-top: 10px; color: red;}
+    .switch {text-align: center; margin-top: 15px; color: #555;}
+    .switch span {color: #25D366; cursor: pointer; font-weight: bold;}
+  </style>
 </head>
 <body>
-<div class="card">
-<h1>NYUMBA-6WAZI 🔥</h1>
-<input type="email" id="email" placeholder="Email yako">
-<input type="password" id="password" placeholder="Nenosiri">
-<button onclick="register()">Jisajili Mpya</button>
-<button onclick="login()">Ingia</button>
-<p id="msg"></p>
+
+<div class="box">
+  <h2 id="title">🔥 NYUMBA-6WAZI</h2>
+  
+  <div id="registerForm">
+    <input id="regEmail" type="email" placeholder="Barua pepe">
+    <input id="regPass" type="password" placeholder="Neno la siri">
+    <button onclick="register()">Jisajili</button>
+  </div>
+
+  <div id="loginForm" style="display:none;">
+    <input id="logEmail" type="email" placeholder="Barua pepe">
+    <input id="logPass" type="password" placeholder="Neno la siri">
+    <button onclick="login()">Ingia</button>
+  </div>
+
+  <p id="message"></p>
+  <div class="switch">
+    <span id="switchText" onclick="switchForm()">Una account? Ingia</span>
+  </div>
 </div>
 
-<script>
-// 1. BANDAIKA CONFIG YAKO KAMILI HAPA KUTOKA FIREBASE
-const firebaseConfig = {
-  apiKey: "AIzaSyANpw55jBWxMyf6AC1_y7m6idNYhLPyka0",
-  authDomain: "nyumba-6wazi.firebaseapp.com",
-  projectId: "nyumba-6wazi",
-  storageBucket: "nyumba-6wazi.firebasestorage.app",
-  messagingSenderId: "401684834308",
-  appId: "1:401684834308:web:cfeadb76f030283fca2d51"
-};
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
-// 2. WASHA FIREBASE
+<script>
+// *** BADILI HII NA CONFIG YAKO YA FIREBASE ***
+const firebaseConfig = {
+  apiKey: "WEKA_YAKO",
+  authDomain: "WEKA_YAKO",
+  projectId: "WEKA_YAKO",
+  storageBucket: "WEKA_YAKO",
+  messagingSenderId: "WEKA_YAKO",
+  appId: "WEKA_YAKO"
+};
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
+const db = firebase.firestore();
 
-// 3. KUJISAJILI
-function register(){
-  const email = document.getElementById('email').value;
-  const pass = document.getElementById('password').value;
-  if(email=="" || pass==""){ document.getElementById('msg').innerText = "Jaza email na nenosiri"; return;}
-  auth.createUserWithEmailAndPassword(email, pass)
-  .then(()=> document.getElementById('msg').innerText = "Umejisajili! Sasa bonyeza Ingia.")
-  .catch(e=> document.getElementById('msg').innerText = "Error: " + e.message);
+let isLogin = false;
+
+// KUBADILISHA KATI YA LOGIN NA REGISTER
+function switchForm(){
+  isLogin = !isLogin;
+  document.getElementById('registerForm').style.display = isLogin ? 'none' : 'block';
+  document.getElementById('loginForm').style.display = isLogin ? 'block' : 'none';
+  document.getElementById('switchText').innerText = isLogin ? 'Huna account? Jisajili' : 'Una account? Ingia';
+  document.getElementById('title').innerText = isLogin ? '🔥 INGIA' : '🔥 NYUMBA-6WAZI';
 }
 
-// 4. KUINGIA
+// KUJISAJILI
+function register(){
+  const email = document.getElementById('regEmail').value;
+  const pass = document.getElementById('regPass').value;
+  
+  auth.createUserWithEmailAndPassword(email, pass)
+  .then(userCredential => {
+    // HAPA TUNAHIFADHI USER KWENYE DATABASE
+    db.collection("users").doc(userCredential.user.uid).set({
+      email: email,
+      createdAt: new Date()
+    })
+    document.getElementById('message').style.color = 'green';
+    document.getElementById('message').innerText = 'Umefanikiwa kujisajili!';
+    setTimeout(() => window.location = "chat.html", 1500);
+  })
+  .catch(error => {
+    document.getElementById('message').innerText = error.message;
+  });
+}
+
+// KUINGIA
 function login(){
-  const email = document.getElementById('email').value;
-  const pass = document.getElementById('password').value;
-  if(email=="" || pass==""){ document.getElementById('msg').innerText = "Jaza email na nenosiri"; return;}
+  const email = document.getElementById('logEmail').value;
+  const pass = document.getElementById('logPass').value;
+  
   auth.signInWithEmailAndPassword(email, pass)
-  .then(()=> window.location.href = "view.html")
-  .catch(e=> document.getElementById('msg').innerText = "Error: " + e.message);
+  .then(() => {
+    window.location = "chat.html";
+  })
+  .catch(error => {
+    document.getElementById('message').innerText = error.message;
+  });
 }
 </script>
+
 </body>
-</html>."}
+</html>
