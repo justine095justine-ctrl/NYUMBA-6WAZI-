@@ -1,34 +1,19 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Nyumba 6Wazi Chat</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:sans-serif;background:#111;color:#fff;height:100vh;display:flex;flex-direction:column}
-h2{text-align:center;color:#00ff88;padding:15px;background:#1a1a1a;margin:0}
-#msg{flex:1;overflow-y:scroll;background:#1a1a1a;padding:15px;margin:10px;border-radius:10px}
-.input-area{display:flex;gap:8px;padding:10px;background:#1a1a1a}
-input[type="text"]{flex:1;padding:12px;border-radius:25px;border:none;background:#333;color:#fff;font-size:16px}
-button{padding:12px 16px;border-radius:25px;border:none;background:#00ff88;color:#000;font-weight:bold;font-size:16px}
-#picBtn{background:#333;color:#00ff88;font-size:20px}
-img{max-width:100%;border-radius:15px;margin:5px 0}
-</style>
-</head>
-<body>
-<h2>Nyumba 6Wazi Chat</h2>
-<div id="msg"></div>
-<input type="file" id="imageInput" accept="image/*" style="display:none">
-<div class="input-area">
-  <button id="picBtn">📎</button>
-  <input type="text" id="msgInput" placeholder="Andika ujumbe...">
-  <button id="sendBtn">Tuma</button>
-</div>
-
+<!DOCTYPE html><html><head><title>6Wazi Chat</title><style>
+*{margin:0}body{background:#111;color:#fff;height:100vh;display:flex;flex-direction:column}
+h2{text-align:center;color:#0f8;padding:10px;background:#1a1a1a}
+#msg{flex:1;overflow:auto;padding:10px;margin:10px;background:#1a1a1a;border-radius:10px}
+.input{display:flex;gap:5px;padding:10px;background:#1a1a1a}
+input{flex:1;padding:10px;border-radius:20px;border:0;background:#333;color:#fff}
+button{padding:10px 15px;border-radius:20px;border:0;background:#0f8;color:#000;font-weight:bold}
+#pic{background:#333;color:#0f8}
+</style></head><body>
+<h2>Nyumba 6Wazi</h2><div id="msg"></div>
+<input type="file" id="f" accept="image/*" style="display:none">
+<div class="input"><button id="pic">📎</button><input id="t" placeholder="Andika..."><button id="s">Tuma</button></div>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 <script>
-
 const firebaseConfig = {
   apiKey: "AIzaSyANpw55jBWxMyf6AC1_y7m6idNYhLPyka0",
   authDomain: "nyumba-6wazi.firebaseapp.com",
@@ -38,42 +23,10 @@ const firebaseConfig = {
   messagingSenderId: "401684834308",
   appId: "1:401684834308:web:a65ab41ee55de814ca2d51"
 };
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-const storage = firebase.storage();
-
-const msgDiv = document.getElementById('msg');
-const msgInput = document.getElementById('msgInput');
-const sendBtn = document.getElementById('sendBtn');
-const picBtn = document.getElementById('picBtn');
-const imageInput = document.getElementById('imageInput');
-
-picBtn.onclick = () => imageInput.click();
-
-sendBtn.onclick = () => {
-  const text = msgInput.value.trim();
-  if(text) {
-    db.ref('messages').push({name: 'Wewe', text: text, time: Date.now()});
-    msgInput.value = '';
-  }
-};
-
-imageInput.onchange = (e) => {
-  const file = e.target.files[0];
-  if(!file) return;
-  const ref = storage.ref('pics/' + Date.now() + file.name);
-  ref.put(file).then(snap => snap.ref.getDownloadURL()).then(url => {
-    db.ref('messages').push({name: 'Wewe', img: url, time: Date.now()});
-  });
-};
-
-db.ref('messages').on('child_added', snap => {
-  const m = snap.val();
-  let content = m.text? m.text : `<img src="${m.img}">`;
-  msgDiv.innerHTML += `<div><b>${m.name}:</b> ${content}</div>`;
-  msgDiv.scrollTop = msgDiv.scrollHeight;
-});
-</script>
-</body>
-</html>
+firebase.initializeApp(cfg);const db=firebase.database(),st=firebase.storage();
+let n=prompt("Jina lako:")||"Mgeni";
+pic.onclick=()=>f.click();
+s.onclick=()=>{if(t.value){db.ref('m').push({n:n,x:t.value});t.value=""}};
+f.onchange=e=>{let r=st.ref('p/'+Date.now());r.put(e.target.files[0]).then(u=>u.ref.getURL()).then(u=>db.ref('m').push({n:n,i:u}))};
+db.ref('m').on('child_added',s=>{let d=s.val();msg.innerHTML+=`<div><b>${d.n}:</b> ${d.x?d.x:`<img src=${d.i} width=100%>`}</div>`;msg.scrollTop=99999});
+</script></body></html>
