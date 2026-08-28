@@ -1,114 +1,32 @@
-<!DOCTYPE html>
-<html lang="sw">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NYUMBA-6WAZI - Ingia</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-        body {
-            background: linear-gradient(135deg, #00C851, #007E33);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-        }
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #00C851;
-            margin-bottom: 20px;
-        }
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #00C851;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        button:hover { background: #007E33; }
-        .toggle {
-            margin-top: 15px;
-            color: #00C851;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        .error { color: red; margin-top: 10px; font-size: 14px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="logo">🔥 NYUMBA-6WAZI</div>
-        <input type="email" id="email" placeholder="Weka Email yako">
-        <input type="password" id="password" placeholder="Weka Password">
-        <button id="authBtn">Jisajili</button>
-        <a class="toggle" id="toggleAuth">Una account? Ingia</a>
-        <div class="error" id="errorMsg"></div>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script>
-        const firebaseConfig = {
-          apiKey: "AIzaSyANpw55jBWxMyf6AC1_y7m6idNYhLPyka0",
-          authDomain: "nyumba-6wazi.firebaseapp.com",
-          projectId: "nyumba-6wazi",
-          storageBucket: "nyumba-6wazi.firebasestorage.app",
-          messagingSenderId: "401684834308",
-          appId: "1:401684834308:web:cfeadb76f030283fca2d51"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        
-        let isLogin = false;
-        const authBtn = document.getElementById('authBtn');
-        const toggleAuth = document.getElementById('toggleAuth');
-        const errorMsg = document.getElementById('errorMsg');
-
-        toggleAuth.onclick = () => {
-            isLogin = !isLogin;
-            authBtn.innerText = isLogin ? 'Ingia' : 'Jisajili';
-            toggleAuth.innerText = isLogin ? 'Huna account? Jisajili' : 'Una account? Ingia';
-        }
-
-        authBtn.onclick = () => {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            errorMsg.innerText = '';
-
-            if(isLogin){
-                auth.signInWithEmailAndPassword(email, password)
-                .then(() => window.location.href = 'chat.html')
-                .catch(err => errorMsg.innerText = err.message);
-            } else {
-                auth.createUserWithEmailAndPassword(email, password)
-                .then(() => window.location.href = 'chat.html')
-                .catch(err => errorMsg.innerText = err.message);
-            }
-        }
-    </script>
-</body>
-</html>
+<!DOCTYPE html><html><head><title>Ingia 6Wazi</title><style>
+*{margin:0}body{background:#111;color:#fff;height:100vh;display:flex;align-items:center;justify-content:center;font-family:sans-serif}
+.box{width:90%;max-width:400px;background:#1a1a1a;padding:20px;border-radius:15px}
+h2{text-align:center;color:#0f8;margin-bottom:20px}
+input{width:100%;padding:12px;margin:8px 0;border-radius:10px;border:0;background:#333;color:#fff;font-size:16px}
+button{width:100%;padding:12px;margin:8px 0;border-radius:10px;border:0;background:#0f8;color:#000;font-weight:bold;font-size:16px}
+.error{color:red;font-size:14px;text-align:center}
+</style></head><body><div class="box">
+<h2>🏠 Nyumba 6Wazi</h2>
+<input id="e" placeholder="Email yako">
+<input id="p" type="password" placeholder="Password">
+<button id="up">Jisajili</button>
+<button id="in">Ingia</button>
+<div class="error" id="err"></div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyANpw55jBWxMyf6AC1_y...",
+  authDomain: "nyumba-6wazi.firebaseapp.com",
+  databaseURL: "https://nyumba-6wazi-default-rtdb.firebaseio.com",
+  projectId: "nyumba-6wazi",
+  storageBucket: "nyumba-6wazi.firebasestorage.app",
+  messagingSenderId: "401684834308",
+  appId: "1:401684834308:web:a65ab41..."
+};
+firebase.initializeApp(cfg);
+up.onclick=()=>auth.createUserWithEmailAndPassword(e.value,p.value).then(()=>location="chat.html").catch(x=>err.innerText=x.message);
+in.onclick=()=>auth.signInWithEmailAndPassword(e.value,p.value).then(()=>location="chat.html").catch(x=>err.innerText=x.message);
+const auth=firebase.auth();
+</script></body></html>
