@@ -1,37 +1,52 @@
-<!DOCTYPE html><html><head><style>
-body{background:#111;color:#fff;margin:0;font-family:sans-serif}
-#l,#c{height:100vh;display:flex;flex-direction:column}
-#l{align-items:center;justify-content:center}
-.box{background:#1a1a1a;padding:20px;border-radius:10px;width:80%}
-input,button{width:100%;padding:12px;margin:5px 0;border:0;border-radius:8px;font-size:16px}
-input{background:#333;color:#fff}button{background:#0f8;color:#000;font-weight:bold}
-#m{flex:1;overflow:auto;padding:10px;background:#1a1a1a;margin:10px;border-radius:10px}
-.in{display:flex;gap:5px;padding:10px}
-</style></head><body>
-<div id="l"><div class="box"><h2 style=color:#0f8;text-align:center>6Wazi</h2>
-<input id="e" placeholder="Email"><input id="p" type="password" placeholder="Password">
-<button id="u">Jisajili</button><button id="i">Ingia</button><div id="x" style=color:red></div></div></div>
+<!DOCTYPE html>
+<html>
+<head>
+<title>6Wazi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex-direction:column}
+h1{text-align:center;color:#0f0;padding:15px;background:#111;font-size:20px}
+#box{flex:1;overflow-y:auto;padding:10px;background:#1a1a1a;margin:10px;border-radius:10px}
+.msg{margin:5px 0}
+.in{display:flex;padding:10px;background:#111;gap:5px}
+input{flex:1;padding:12px;border:0;border-radius:20px;background:#333;color:#fff;font-size:16px}
+button{padding:12px 20px;border:0;border-radius:20px;background:#0f0;color:#000;font-weight:bold}
+</style>
+</head>
+<body>
+<h1>Nyumba 6Wazi Chat</h1>
+<div id="box"></div>
+<div class="in">
+<input id="n" placeholder="Jina lako">
+<input id="t" placeholder="Andika...">
+<button onclick="send()">Tuma</button>
+</div>
 
-<div id="c" style="display:none"><h2 style=color:#0f8;text-align:center;padding:10px>Nyumba 6Wazi</h2>
-<div id="m"></div><div class="in"><input id="t"><button id="s">Tuma</button></div></div>
-
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase.js"></script>
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyANpw55jBWxMyf6AC1_y...",
-  authDomain: "nyumba-6wazi.firebaseapp.com",
-  databaseURL: "https://nyumba-6wazi-default-rtdb.firebaseio.com",
-  projectId: "nyumba-6wazi",
-  storageBucket: "nyumba-6wazi.firebasestorage.app",
-  messagingSenderId: "401684834308",
-  appId: "1:401684834308:web:a65ab41..."
+// WEKA CONFIG YAKO HAPA
+var firebaseConfig = {
+  apiKey: "WEKA",
+  authDomain: "WEKA",
+  databaseURL: "WEKA",
+  projectId: "WEKA"
 };
-const a=firebase.auth(),d=firebase.database();
-u.onclick=()=>a.createUserWithEmailAndPassword(e.value,p.value).catch(e=>x.innerText=e.message)
-i.onclick=()=>a.signInWithEmailAndPassword(e.value,p.value).catch(e=>x.innerText=e.message)
-a.onAuthStateChanged(u=>{if(u){l.style.display="none";c.style.display="flex";let n=u.email.split("@")[0]
-s.onclick=()=>{if(t.value){d.ref("m").push({n:n,x:t.value});t.value=""}}
-d.ref("m").on("child_added",s=>{let v=s.val();m.innerHTML+=`<div><b style=color:#0f8>${v.n}:</b> ${v.x}</div>`;m.scrollTop=9999})}})
-</script></body></html>
+firebase.initializeApp(firebaseConfig);
+var db = firebase.database();
+
+function send(){
+  if(n.value!="" && t.value!=""){
+    db.ref("chat").push({jina:n.value,ujumbe:t.value});
+    t.value="";
+  }
+}
+
+db.ref("chat").on("child_added",function(data){
+  var d = data.val();
+  box.innerHTML += '<div class="msg"><b style="color:#0f0">'+d.jina+':</b> '+d.ujumbe+'</div>';
+  box.scrollTop = box.scrollHeight;
+});
+</script>
+</body>
+</html>
