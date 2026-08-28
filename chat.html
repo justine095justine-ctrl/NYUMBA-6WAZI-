@@ -1,7 +1,7 @@
-<!DOCTYPE html><html><head><title>6Wazi Chat</title><style>
+<!DOCTYPE html><html><head><title>6Wazi</title><style>
 *{margin:0}body{background:#111;color:#fff;height:100vh;display:flex;flex-direction:column}
 h2{text-align:center;color:#0f8;padding:10px;background:#1a1a1a}
-#msg{flex:1;overflow:auto;padding:10px;margin:10px;background:#1a1a1a;border-radius:10px}
+#msg{flex:1;overflow:auto;padding:10px;margin:10px;background:#1a1a1a;border-radius:10px;font-size:16px}
 .input{display:flex;gap:5px;padding:10px;background:#1a1a1a}
 input{flex:1;padding:10px;border-radius:20px;border:0;background:#333;color:#fff}
 button{padding:10px 15px;border-radius:20px;border:0;background:#0f8;color:#000;font-weight:bold}
@@ -22,11 +22,11 @@ const firebaseConfig = {
   storageBucket: "nyumba-6wazi.firebasestorage.app",
   messagingSenderId: "401684834308",
   appId: "1:401684834308:web:a65ab41ee55de814ca2d51"
-};
-firebase.initializeApp(cfg);const db=firebase.database(),st=firebase.storage();
+};}
+firebase.initializeApp(firebaseConfig);const db=firebase.database(),st=firebase.storage();
 let n=prompt("Jina lako:")||"Mgeni";
 pic.onclick=()=>f.click();
 s.onclick=()=>{if(t.value){db.ref('m').push({n:n,x:t.value});t.value=""}};
-f.onchange=e=>{let r=st.ref('p/'+Date.now());r.put(e.target.files[0]).then(u=>u.ref.getURL()).then(u=>db.ref('m').push({n:n,i:u}))};
-db.ref('m').on('child_added',s=>{let d=s.val();msg.innerHTML+=`<div><b>${d.n}:</b> ${d.x?d.x:`<img src=${d.i} width=100%>`}</div>`;msg.scrollTop=99999});
+f.onchange=e=>{let r=st.ref('p/'+Date.now());r.put(e.target.files[0]).then(u=>u.ref.getDownloadURL()).then(u=>db.ref('m').push({n:n,i:u}))};
+db.ref('m').on('child_added',s=>{let d=s.val();msg.innerHTML+=`<div><b style=color:#0f8>${d.n}:</b> ${d.x?d.x:`<img src="${d.i}" width="100%">`}</div>`;msg.scrollTop=99999});
 </script></body></html>
