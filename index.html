@@ -1,20 +1,23 @@
-<!DOCTYPE html><html><head><title>Ingia 6Wazi</title><style>
-*{margin:0}body{background:#111;color:#fff;height:100vh;display:flex;align-items:center;justify-content:center;font-family:sans-serif}
-.box{width:90%;max-width:400px;background:#1a1a1a;padding:20px;border-radius:15px}
-h2{text-align:center;color:#0f8;margin-bottom:20px}
-input{width:100%;padding:12px;margin:8px 0;border-radius:10px;border:0;background:#333;color:#fff;font-size:16px}
-button{width:100%;padding:12px;margin:8px 0;border-radius:10px;border:0;background:#0f8;color:#000;font-weight:bold;font-size:16px}
-.error{color:red;font-size:14px;text-align:center}
-</style></head><body><div class="box">
-<h2>🏠 Nyumba 6Wazi</h2>
-<input id="e" placeholder="Email yako">
-<input id="p" type="password" placeholder="Password">
-<button id="up">Jisajili</button>
-<button id="in">Ingia</button>
-<div class="error" id="err"></div>
-</div>
+<!DOCTYPE html><html><head><style>
+body{background:#111;color:#fff;margin:0;font-family:sans-serif}
+#l,#c{height:100vh;display:flex;flex-direction:column}
+#l{align-items:center;justify-content:center}
+.box{background:#1a1a1a;padding:20px;border-radius:10px;width:80%}
+input,button{width:100%;padding:12px;margin:5px 0;border:0;border-radius:8px;font-size:16px}
+input{background:#333;color:#fff}button{background:#0f8;color:#000;font-weight:bold}
+#m{flex:1;overflow:auto;padding:10px;background:#1a1a1a;margin:10px;border-radius:10px}
+.in{display:flex;gap:5px;padding:10px}
+</style></head><body>
+<div id="l"><div class="box"><h2 style=color:#0f8;text-align:center>6Wazi</h2>
+<input id="e" placeholder="Email"><input id="p" type="password" placeholder="Password">
+<button id="u">Jisajili</button><button id="i">Ingia</button><div id="x" style=color:red></div></div></div>
+
+<div id="c" style="display:none"><h2 style=color:#0f8;text-align:center;padding:10px>Nyumba 6Wazi</h2>
+<div id="m"></div><div class="in"><input id="t"><button id="s">Tuma</button></div></div>
+
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyANpw55jBWxMyf6AC1_y...",
@@ -24,9 +27,19 @@ const firebaseConfig = {
   storageBucket: "nyumba-6wazi.firebasestorage.app",
   messagingSenderId: "401684834308",
   appId: "1:401684834308:web:a65ab41..."
+};const firebaseConfig = {
+  apiKey: "AIzaSyANpw55jBWxMyf6AC1_y...",
+  authDomain: "nyumba-6wazi.firebaseapp.com",
+  databaseURL: "https://nyumba-6wazi-default-rtdb.firebaseio.com",
+  projectId: "nyumba-6wazi",
+  storageBucket: "nyumba-6wazi.firebasestorage.app",
+  messagingSenderId: "401684834308",
+  appId: "1:401684834308:web:a65ab41..."
 };
-firebase.initializeApp(cfg);
-up.onclick=()=>auth.createUserWithEmailAndPassword(e.value,p.value).then(()=>location="chat.html").catch(x=>err.innerText=x.message);
-in.onclick=()=>auth.signInWithEmailAndPassword(e.value,p.value).then(()=>location="chat.html").catch(x=>err.innerText=x.message);
-const auth=firebase.auth();
+const a=firebase.auth(),d=firebase.database();
+u.onclick=()=>a.createUserWithEmailAndPassword(e.value,p.value).catch(e=>x.innerText=e.message)
+i.onclick=()=>a.signInWithEmailAndPassword(e.value,p.value).catch(e=>x.innerText=e.message)
+a.onAuthStateChanged(u=>{if(u){l.style.display="none";c.style.display="flex";let n=u.email.split("@")[0]
+s.onclick=()=>{if(t.value){d.ref("m").push({n:n,x:t.value});t.value=""}}
+d.ref("m").on("child_added",s=>{let v=s.val();m.innerHTML+=`<div><b style=color:#0f8>${v.n}:</b> ${v.x}</div>`;m.scrollTop=9999})}})
 </script></body></html>
