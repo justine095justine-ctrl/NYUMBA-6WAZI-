@@ -1,10 +1,44 @@
-<!DOCTYPE html>
-<html>
-<head><title>TEST</title></head>
-<body style="background:black;color:lime;text-align:center;padding:50px">
-<h1>NYUMBA 6WAZI</h1>
-<h2>INAFAANYA KAMA UNAONA HII</h2>
-<input placeholder="Andika jina">
-<button>TUMA</button>
-</body>
-</html>
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width, initial-scale=1"><title>NYUMBA 6WAZI</title>
+<style>
+body{background:#000;color:#0f0;padding:10px;text-align:center;font-family:sans-serif}
+h1{margin:10px 0}
+#d{height:60vh;overflow-y:scroll;background:#111;margin:10px 0;text-align:left;padding:15px;border-radius:15px;border:1px solid #0f0}
+input,button{padding:14px;width:95%;margin:6px 0;border-radius:25px;border:0;font-size:16px}
+input{background:#222;color:#fff}
+button{background:#0f0;color:#000;font-weight:bold}
+</style>
+</head><body>
+<h1>NYUMBA 6WAZI CHAT</h1>
+<div id="d">Inapakia chat...</div>
+<input id="j" placeholder="Andika jina lako">
+<input id="u" placeholder="Andika ujumbe wako">
+<button onclick="t()">TUMA UJUMBE</button>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyANpw55jBWxMyf6AC1_y7m6idNYhLPyka0",
+  authDomain: "nyumba-6wazi.firebaseapp.com",
+  databaseURL: "https://nyumba-6wazi-default-rtdb.firebaseio.com",
+  projectId: "nyumba-6wazi",
+  storageBucket: "nyumba-6wazi.firebasestorage.app",
+  messagingSenderId: "401684834308",
+  appId: "1:401684834308:web:a65ab41ee55de814ca2d51"
+};
+
+firebase.initializeApp(firebaseConfig);
+var db = firebase.database();
+
+function t(){
+  if(j.value!="" && u.value!=""){
+    db.ref("messages").push({jina:j.value,msg:u.value});
+    u.value="";
+  }
+}
+
+db.ref("messages").on("child_added",function(s){
+  d.innerHTML += "<b>"+s.val().jina+":</b> "+s.val().msg+"<br>";
+  d.scrollTop = 9999;
+});
+</script>
+</body></html>
