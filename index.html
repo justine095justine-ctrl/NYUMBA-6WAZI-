@@ -20,17 +20,17 @@ button {background: #00ff88; color: black; font-weight: bold;}
 <div id="chat-box"></div>
 <input id="messageInput" placeholder="Andika ujumbe...">
 <button id="sendBtn">Tuma</button> <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-  import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyC9YxJ7P8Q9R0T1U2V3W4X5Y6Z7A8B9C0D",
+    apiKey: "AIzaSyC9YxJ7P8Q9R0T1U2V3W4X5Y6Z7A8B9",
     authDomain: "nyumba-6wazi.firebaseapp.com",
     databaseURL: "https://nyumba-6wazi-default-rtdb.firebaseio.com",
     projectId: "nyumba-6wazi",
     storageBucket: "nyumba-6wazi.appspot.com",
     messagingSenderId: "123456789012",
-    appId: "1:123456789012:web:a1b2c3d4e5f6g7h8i9j0"
+    appId: "1:123456789012:web:a1b2c3d4e5f6g7h8"
   };
 
   const app = initializeApp(firebaseConfig);
@@ -38,37 +38,39 @@ button {background: #00ff88; color: black; font-weight: bold;}
   const messagesRef = ref(db, 'messages');
 
   const chatBox = document.getElementById('chat-box');
-  const nameInput = document.getElementById('name');
-  const messageInput = document.getElementById('message');
+  const nameInput = document.getElementById('nameInput');
+  const messageInput = document.getElementById('messageInput');
   const sendBtn = document.getElementById('sendBtn');
 
-  // TUMA UJUMBE PAMOJA NA MUDA
-  sendBtn.onclick = () => {
-    const name = nameInput.value.trim();
-    const message = messageInput.value.trim();
+  function displayMessage(data) {
+    const msgDiv = document.createElement('div');
+    const time = new Date(data.time).toLocaleTimeString('sw-TZ', {hour: '2-digit', minute: '2-digit'});
     
-    if (name && message) {
-      const now = new Date();
-      const time = now.toLocaleTimeString('sw-TZ', {hour: '2-digit', minute:'2-digit'});
-      
-      push(messagesRef, { 
-        name: name, 
-        message: message,
-        time: time  // Hapa tunaweka muda
-      });
-      messageInput.value = '';
+    msgDiv.innerHTML = `<b>${data.name}</b> - <span class="time">${time}</span><br>${data.text}`;
+    msgDiv.classList.add('msg');
+    
+    if (data.name === nameInput.value) {
+      msgDiv.classList.add('me');
+    } else {
+      msgDiv.classList.add('other');
     }
-  };
-
-  // ONYESHA UJUMBE PAMOJA NA MUDA
-  onChildAdded(messagesRef, (data) => {
-    const msg = data.val();
-    const time = msg.time || ''; // Ikiwa hakuna muda tumia tupu
-    
-    const div = document.createElement('div');
-div.className = 'msg ' + (msg.name === nameInput.value ? 'me' : 'other');
-    div.innerHTML = `<b>${msg.name}</b> <span style="color:gray; font-size:12px;">- ${time}</span>: ${msg.message}`;
-    chatBox.appendChild(div);
+    chatBox.appendChild(msgDiv);
     chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  onChildAdded(messagesRef, (snapshot) => {
+    displayMessage(snapshot.val());
+  });
+
+  sendBtn.addEventListener('click', () => {
+    const name = nameInput.value.trim();
+    const text = messageInput.value.trim();
+    if (name === "" || text === "") return;
+    push(messagesRef, {
+      name: name,
+      text: text,
+      time: Date.now()
+    });
+    messageInput.value = '';
   });
 </script>
