@@ -1,4 +1,25 @@
-<script type="module">
+<!DOCTYPE html>
+<html>
+<head>
+<title>NYUMBA 6WAZI CHAT</title>
+<style>
+body {background: #0b141a; color: #e9edef; font-family: Arial; padding: 10px;}
+h1 {color: #00ff88; text-align: center;}
+#chat-box {background: #111b21; height: 400px; overflow-y: scroll; padding: 10px; border-radius: 10px; display: flex; flex-direction: column; gap: 6px;}
+.msg {padding: 8px 12px; border-radius: 7px; max-width: 75%;}
+.me {background: #005c4b; align-self: flex-end;}
+.other {background: #202c33; align-self: flex-start;}
+.time {font-size: 11px; color: #8696a0;}
+input, button {padding: 12px; border-radius: 8px; border: none; width: 100%; margin-top: 5px;}
+button {background: #00ff88; color: black; font-weight: bold;}
+</style>
+</head>
+<body>
+<h1>NYUMBA 6WAZI CHAT</h1>
+<input id="nameInput" placeholder="Jina lako">
+<div id="chat-box"></div>
+<input id="messageInput" placeholder="Andika ujumbe...">
+<button id="sendBtn">Tuma</button> <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
   import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
@@ -45,6 +66,7 @@
     const time = msg.time || ''; // Ikiwa hakuna muda tumia tupu
     
     const div = document.createElement('div');
+div.className = 'msg ' + (msg.name === nameInput.value ? 'me' : 'other');
     div.innerHTML = `<b>${msg.name}</b> <span style="color:gray; font-size:12px;">- ${time}</span>: ${msg.message}`;
     chatBox.appendChild(div);
     chatBox.scrollTop = chatBox.scrollHeight;
