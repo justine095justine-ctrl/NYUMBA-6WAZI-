@@ -42,14 +42,15 @@ window.onload=function(){
 }
 
 function ingia(){
+  alert("Button inafanya kazi!"); //ongeza hii line ya kwanza
   jina=document.getElementById("jina").value;
   namba=document.getElementById("namba").value;
   if(!jina||!namba)return alert("Jaza jina na namba");
   localStorage.jina=jina;localStorage.namba=namba;
   users.child(namba).set({jina:jina,namba:namba,t:Date.now()});
   document.getElementById("reg").style.display="none";
-  loadChat();
-}
+  location.reload();
+  }
 
 function loadChat(){
   chat.limitToLast(50).on("child_added",function(s){
