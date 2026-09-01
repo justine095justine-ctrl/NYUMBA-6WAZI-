@@ -1,24 +1,53 @@
-<!DOCTYPE html><html lang="sw"><head><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NYUMBA 6WAZI</title><style>
-body{background:#000;color:#0f0;font-family:Arial;padding:10px}
-h1{text-align:center}#chatBox{height:60vh;border:2px solid #0f0;border-radius:10px;
-overflow-y:auto;padding:10px;background:#010101;display:flex;flex-direction:column;gap:8px}
-.msg{padding:10px;border-radius:18px;max-width:75%}
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NYUMBA 6WAZI CHAT</title>
+<style>
+body{background:#111;color:#eee;font-family:Arial;margin:0;padding:10px}
+h2{text-align:center;color:#0f0}
+#chat{height:70vh;overflow-y:auto;border:1px solid #333;padding:10px;display:flex;flex-direction:column;gap:8px;background:#000}
+.msg{padding:8px 12px;border-radius:15px;max-width:75%;word-wrap:break-word}
 .myMsg{background:#222;align-self:flex-start}
 .otherMsg{background:#0f0;color:#000;align-self:flex-end;font-weight:bold}
-input,button{width:100%;padding:12px;margin:5px 0;border-radius:20px;border:1px solid #0f0;
-background:#111;color:#0f0}</style></head><body>
-<h1>🔥 NYUMBA 6WAZI 🔥</h1><div id="chatBox">Inapakia...</div>
-<input id="name" value="Jastin"><input id="msg"><button onclick="send()">TUMA</button>
+input,button{padding:10px;margin:5px 0;border:none;border-radius:8px}
+input{width:70%;background:#222;color:#eee}
+button{background:#0f0;color:#000;font-weight:bold;width:25%}
+</style>
+</head><body>
+<h2>NYUMBA 6WAZI CHAT</h2>
+<div id="chat">Inapakia chat...</div>
+<input id="name" placeholder="Jina lako">
+<input id="msg" placeholder="Andika ujumbe">
+<button onclick="send()">TUMA</button>
+
 <script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import{getDatabase,ref,push,onValue}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-const c={apiKey:"-YAIzaSyANpw55jBWxMyf6AC1_y7m6idNYhLPyka0",authDomain:"nyumba-6wazi.firebaseapp.com",
-databaseURL:"https://nyumba-6wazi-default-rtdb.firebaseio.com",projectId:"nyumba-6wazi"};
-const db=getDatabase(initializeApp(c));const r=ref(db,"chat");
-function send(){const n=name.value,t=msg.value;if(t)push(r,{name:n,text:t,time:new Date().toLocaleTimeString('sw-TZ',{h:'2-digit',m:'2-digit'})});msg.value=""}
-onValue(r,s=>{chatBox.innerHTML="";const n=name.value;s.forEach(x=>{const d=x.val();
-chatBox.innerHTML+=`<div class="msg ${d.name==n?'myMsg':'otherMsg'}"><b>${d.name}</b><br>${d.text}<br><small>${d.time}</small></div>`});
-chatBox.scrollTop=chatBox.scrollHeight})
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDUMMY",
+  authDomain: "nyumba-6wazi.firebaseapp.com",
+  databaseURL: "https://nyumba-6wazi-default-rtdb.firebaseio.com",
+  projectId: "nyumba-6wazi",
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const chatRef = ref(db, "chat");
+
+const chat = document.getElementById("chat");
+onChildAdded(chatRef, (snap) => {
+  const d = snap.val();
+  const div = document.createElement("div");
+const isMe = d.name === document.getElementById("name").value;
+div.className = "msg " + (isMe ? "myMsg" : "otherMsg");
+div.textContent = d.name + " : " + d.text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+});
+
+window.send = () => {
+  const n = document.getElementById("name").value || "Mgeni";
+  const t = document.getElementById("msg").value;
+  if(t.trim()){
+    push(chatRef, {name:n, text:t});
+    document.getElementById("msg").value = "";
+  }
+}
 </script></body></html>
