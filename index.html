@@ -2,17 +2,25 @@
 <html>
 <head>
 <title>NYUMBA 6WAZI</title>
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<link rel="stylesheet" href="style.css">
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<style>
+  body { background: #0e0e0e; color: white; font-family: Arial; margin:0; }
+  #chat { padding: 10px; height: 75vh; overflow-y: scroll; display: flex; flex-direction: column; gap: 8px; }
+  .msg { padding: 10px 14px; border-radius: 18px; max-width: 70%; }
+  .me { background: #0084ff; align-self: flex-end; } /* Wako - bluu kulia */
+  .you { background: #3a3a3a; align-self: flex-start; } /* Wa wengine - kijivu kushoto */
+  .inputs { display:flex; padding:10px; gap:5px; }
+  #n, #m { flex:1; padding: 10px; border: none; border-radius: 10px; background: #222; color: white; }
+  button { padding: 10px 20px; border: none; border-radius: 10px; background: #00ff88; font-weight: bold; }
+</style>
 </head>
 <body>
 
-<h2>NYUMBA 6WAZI 🔥</h2>
 <div id="chat"></div>
-<div class="input-area">
+
+<div class="inputs">
   <input id="n" placeholder="Jina lako">
   <input id="m" placeholder="Andika ujumbe...">
   <button onclick="tuma()">TUMA</button>
