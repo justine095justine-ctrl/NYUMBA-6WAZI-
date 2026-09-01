@@ -13,6 +13,8 @@ var jinaLangu = "";
 
 db.limitToLast(50).on("child_added",function(s){
   var d = s.val();
+  if(!d.j || !d.u) return; // Hii inafuta undefined
+
   var div = document.createElement("div");
   div.className = "msg " + (d.j == jinaLangu ? "me" : "you");
   div.innerHTML = "<b>"+d.j+":</b> "+d.u;
@@ -23,13 +25,10 @@ db.limitToLast(50).on("child_added",function(s){
 function tuma(){
   var jinaInput = document.getElementById("n");
   var ujumbeInput = document.getElementById("m");
-  
   if(jinaInput.value != "") jinaLangu = jinaInput.value;
   jinaInput.disabled = true;
-  
   var ujumbe = ujumbeInput.value;
   if(jinaLangu == "" || ujumbe == "") { alert("Jaza jina na ujumbe"); return; }
-  
   db.push({j:jinaLangu, u:ujumbe, t:Date.now()});
   ujumbeInput.value = "";
 }
