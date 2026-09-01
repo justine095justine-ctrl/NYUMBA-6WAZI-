@@ -25,3 +25,15 @@
     chatDiv.scrollTop = chatDiv.scrollHeight;
     if(chatDiv.innerText.includes("Inapakia")) chatDiv.innerHTML = "";
   });
+  window.send = () => {
+    const name = document.getElementById("name").value.trim();
+    const msg = document.getElementById("msg").value.trim();
+    if(name && msg){
+      myName = name;
+      push(chatRef, {name, msg});
+      document.getElementById("msg").value = "";
+    }
+  }
+</script>
+</body>
+</html>
