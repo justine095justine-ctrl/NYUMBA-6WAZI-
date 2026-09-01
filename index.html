@@ -29,5 +29,44 @@
       </div>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<script src="register.js"></script> 
-<script src="firebase.js"></script>
+
+<script>
+var cfg={apiKey:"AIzaSyANpw55jBwxMyf6AC1_y7m6idNYhLP yka0",authDomain:"nyumba-6wazi.firebaseapp.com",databaseURL:"https://nyumba-6wazi-default-rtdb.firebaseio.com",projectId:"nyumba-6wazi",storageBucket:"nyumba-6wazi.appspot.com",messagingSenderId:"401684834308",appId:"1:401684834308:web:a65ab41ee55de814ca2d51"};
+firebase.initializeApp(cfg);var db=firebase.database(),chat=db.ref("chat"),users=db.ref("users");
+
+var jina=localStorage.jina||"",namba=localStorage.namba||"";
+
+window.onload=function(){
+  if(jina&&namba){document.getElementById("reg").style.display="none"}
+  loadChat();
+}
+
+function ingia(){
+  jina=document.getElementById("jina").value;
+  namba=document.getElementById("namba").value;
+  if(!jina||!namba)return alert("Jaza jina na namba");
+  localStorage.jina=jina;localStorage.namba=namba;
+  users.child(namba).set({jina:jina,namba:namba,t:Date.now()});
+  document.getElementById("reg").style.display="none";
+  loadChat();
+}
+
+function loadChat(){
+  chat.limitToLast(50).on("child_added",function(s){
+    var d=s.val();if(!d.jina||!d.ujumbe)return;
+    var x=document.createElement("div");
+    x.className="msg "+(d.jina==jina?"me":"you");
+    x.innerHTML="<b>"+d.jina+"</b>"+d.ujumbe;
+    document.getElementById("chat").appendChild(x);
+    document.getElementById("chat").scrollTop=99999
+  });
+}
+
+function tuma(){
+  if(!jina||!namba)return alert("Tafadhali jisajili kwanza");
+  var msg=document.getElementById("m").value;
+  if(!msg)return;
+  chat.push({jina:jina,ujumbe:msg,namba:namba,t:Date.now()});
+  document.getElementById("m").value=""
+}
+    </script>
