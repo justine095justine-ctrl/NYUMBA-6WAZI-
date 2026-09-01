@@ -1,5 +1,5 @@
 const cfg={apiKey:"AIzaSyANpw55jBwxMyf6AC1_y7m6idNYhLP yka0",authDomain:"nyumba-6wazi.firebaseapp.com",databaseURL:"https://nyumba-6wazi-default-rtdb.firebaseio.com",projectId:"nyumba-6wazi",storageBucket:"nyumba-6wazi.appspot.com",messagingSenderId:"401684834308",appId:"1:401684834308:web:a65ab41ee55de814ca2d51"};
-firebase.initializeApp(cfg);const db=firebase.database(),chat=db.ref("chat"),users=db.ref("users");let j=localStorage.j||"",p=localStorage.p||"";onload=()=>{if(j&&p){reg.style.display="none"}};
-function ingia(){j=n.value;p=p.value;if(!j||!p)return alert("Jaza jina na namba");localStorage.j=j;localStorage.p=p;users.child(p).set({j:j,p:p,t:Date.now()});reg.style.display="none"}
-chat.limitToLast(50).on("child_added",s=>{let d=s.val();if(!d.j||!d.u)return;let x=document.createElement("div");x.className="msg "+(d.j==j?"me":"you");x.innerHTML="<b>"+d.j+"</b>"+d.u;chatbox.appendChild(x);chatbox.scrollTop=99999});
-function tuma(){if(!j||!p)return;if(!m.value)return;chat.push({j:j,u:m.value,p:p,t:Date.now()});m.value=""}
+firebase.initializeApp(cfg);const db=firebase.database(),chat=db.ref("chat"),users=db.ref("users");let j=localStorage.j||"",ph=localStorage.p||"";onload=()=>{if(j&&ph){reg.style.display="none"}};
+function ingia(){j=n.value;ph=p.value;if(!j||!ph)return alert("Jaza jina na namba");localStorage.j=j;localStorage.p=ph;users.child(ph).set({j:j,p:ph,t:Date.now()});reg.style.display="none"}
+chat.limitToLast(50).on("child_added",s=>{let d=s.val();if(!d.j||!d.u)return;let x=document.createElement("div");x.className="msg "+(d.j==j?"me":"you");x.innerHTML="<b>"+d.j+"</b>"+d.u;chat.appendChild(x);chat.scrollTop=99999});
+function tuma(){if(!j||!ph)return;if(!m.value)return;chat.push({j:j,u:m.value,p:ph,t:Date.now()});m.value=""}
