@@ -3,4 +3,5 @@ firebase.initializeApp(cfg);
 const db=firebase.database().ref("chat");
 let j=localStorage.j||"";
 onload=()=>{if(j){n.value=j;n.disabled=1}};
-db.limitToLast(50).on("child_added",s=>{let d=s.val();if(!d.j||!d.u)return;let x=document.createElement("div");x.className="msg "+(d.j==j?"me":"you");x.innerHTML="<b>"+d.j+"</b>"+d.u;chat.appendChild(x);chat.scrollTop=99999
+db.limitToLast(50).on("child_added",s=>{let d=s.val();if(!d.j||!d.u)return;let x=document.createElement("div");x.className="msg "+(d.j==j?"me":"you");x.innerHTML="<b>"+d.j+"</b>"+d.u;chat.appendChild(x);chat.scrollTop=99999});
+function tuma(){if(n.value)j=n.value,localStorage.j=j,n.disabled=1;if(!j||!m.value)return alert("Jaza jina na ujumbe");db.push({j:j,u:m.value,t:Date.now()});m.value=""}
