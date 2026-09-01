@@ -1,14 +1,16 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NYUMBA 6WAZI CHAT</title>
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NYUMBA 6WAZI CHAT</title>
 <style>
-body{background:#111;color:#eee;font-family:Arial;margin:0;padding:10px}
+body{background:#000;color:#fff;font-family:Arial;margin:0;padding:10px}
 h2{text-align:center;color:#0f0}
-#chat{height:70vh;overflow-y:auto;border:1px solid #333;padding:10px;display:flex;flex-direction:column;gap:8px;background:#000}
+#chat{height:70vh;overflow-y:auto;border:1px solid #333;border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:8px;background:#111}
 .msg{padding:8px 12px;border-radius:15px;max-width:75%;word-wrap:break-word}
-.myMsg{background:#222;align-self:flex-start}
-.otherMsg{background:#0f0;color:#000;align-self:flex-end;font-weight:bold}
-input,button{padding:10px;margin:5px 0;border:none;border-radius:8px}
+.myMsg{background:#25D366;color:#000;align-self:flex-end;text-align:right;border-radius:15px 15px 0 15px;font-weight:bold}
+.otherMsg{background:#2a2a2a;color:#fff;align-self:flex-start;text-align:left;border-radius:15px 15px 15px 0}
+.sender{font-size:11px;opacity:.8;display:block;margin-bottom:3px}
+input,button{padding:10px;margin:5px 0;border:0;border-radius:8px;box-sizing:border-box}
 input{width:70%;background:#222;color:#eee}
-button{background:#0f0;color:#000;font-weight:bold;width:25%}
+button{width:28%;background:#0f0;color:#000;font-weight:bold;cursor:pointer}
 </style>
 </head><body>
 <h2>NYUMBA 6WAZI CHAT</h2>
@@ -27,27 +29,28 @@ const firebaseConfig = {
   databaseURL: "https://nyumba-6wazi-default-rtdb.firebaseio.com",
   projectId: "nyumba-6wazi",
 };
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const chatRef = ref(db, "chat");
+const chatDiv = document.getElementById("chat");
 
-const chat = document.getElementById("chat");
 onChildAdded(chatRef, (snap) => {
-  const d = snap.val();
+  const data = snap.val();
+  const myName = document.getElementById("name").value;
   const div = document.createElement("div");
-const isMe = d.name === document.getElementById("name").value;
-div.className = "msg " + (isMe ? "myMsg" : "otherMsg");
-div.textContent = d.name + " : " + d.text;
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
+  div.className = "msg " + (data.name === myName ? "myMsg" : "otherMsg");
+  div.innerHTML = `<span class="sender">${data.name}</span>${data.msg}`;
+  chatDiv.appendChild(div);
+  chatDiv.scrollTop = chatDiv.scrollHeight;
 });
 
 window.send = () => {
-  const n = document.getElementById("name").value || "Mgeni";
-  const t = document.getElementById("msg").value;
-  if(t.trim()){
-    push(chatRef, {name:n, text:t});
-    document.getElementById("msg").value = "";
-  }
-}
-</script></body></html>
+  const name = document.getElementById("name").value.trim();
+  const msg = document.getElementById("msg").value.trim();
+  if(!name || !msg) return;
+  push(chatRef, {name, msg});
+  document.getElementById("msg").value = "";
+};
+</script>
+</body></html>
