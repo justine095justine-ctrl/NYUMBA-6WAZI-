@@ -9,15 +9,21 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 var db = firebase.database().ref("chat");
-var jinaLangu = "";
+
+// HII NDIO MPYA: KUKUMBUKA JINA
+var jinaLangu = localStorage.getItem("jinaLaChat") || "";
+if(jinaLangu != ""){
+  document.getElementById("n").value = jinaLangu;
+  document.getElementById("n").disabled = true;
+}
 
 db.limitToLast(50).on("child_added",function(s){
   var d = s.val();
-  if(!d.j || !d.u) return; // Hii inafuta undefined
+  if(!d.j || !d.u) return;
 
   var div = document.createElement("div");
   div.className = "msg " + (d.j == jinaLangu ? "me" : "you");
-  div.innerHTML = "<b>"+d.j+":</b> "+d.u;
+  div.innerHTML = "<b>"+d.j+"</b>"+d.u;
   document.getElementById("chat").appendChild(div);
   document.getElementById("chat").scrollTop = 99999;
 });
@@ -25,10 +31,16 @@ db.limitToLast(50).on("child_added",function(s){
 function tuma(){
   var jinaInput = document.getElementById("n");
   var ujumbeInput = document.getElementById("m");
-  if(jinaInput.value != "") jinaLangu = jinaInput.value;
-  jinaInput.disabled = true;
+  
+  if(jinaInput.value != "") {
+    jinaLangu = jinaInput.value;
+    localStorage.setItem("jinaLaChat", jinaLangu); // HII NDIO INAHIFADHI
+    jinaInput.disabled = true;
+  }
+  
   var ujumbe = ujumbeInput.value;
   if(jinaLangu == "" || ujumbe == "") { alert("Jaza jina na ujumbe"); return; }
+  
   db.push({j:jinaLangu, u:ujumbe, t:Date.now()});
   ujumbeInput.value = "";
 }
