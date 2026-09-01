@@ -23,8 +23,20 @@ button{width:28%;padding:10px;background:#0f0;border:0}
 import{initializeApp}from"https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import{getDatabase,ref,push,onChildAdded}from"https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 const c={apiKey:"AIzaSyANpw55jBWxMyf6AC1_y7m6idNYhLPyka0",authDomain:"nyumba-6wazi.firebaseapp.com",databaseURL:"https://nyumba-6wazi-default-rtdb.firebaseio.com",projectId:"nyumba-6wazi",storageBucket:"nyumba-6wazi.firebasestorage.app",messagingSenderId:"401684834308",appId:"1:401684834308:web:a65ab41ee55de814ca2d51"};
-const a=initializeApp(c);const d=getDatabase(a);const r=ref(d,"chat");const ch=document.getElementById("chat");let me="";
-onChildAdded(r,(x)=>{const v=x.val();const e=document.createElement("div");e.className="msg "+(v.name===me?"me":"you");e.innerHTML="<b>"+v.name+":</b> "+v.msg;ch.appendChild(e);ch.scrollTop=ch.scrollHeight;if(ch.innerText.includes("Inapakia"))ch.innerHTML="";});
+const a=initializeApp(c);
+const d=getDatabase(a);
+const r=ref(d,"chat");
+const ch=document.getElementById("chat");
+let me="";
+onChildAdded(r,(x)=>{
+  const v=x.val();
+  const e=document.createElement("div");
+  e.className="msg "+(v.name===me?"me":"you");
+  e.innerHTML="<b>"+(v.name||v.n||"Mgeni")+":</b> "+(v.msg||v.m||"");
+  ch.appendChild(e);
+  ch.scrollTop=ch.scrollHeight;
+  if(ch.innerText.includes("Inapakia"))ch.innerHTML="";
+});
 window.s=()=>{const n=document.getElementById("n").value;const m=document.getElementById("m").value;if(n&&m){me=n;push(r,{name:n,msg:m});document.getElementById("m").value="";}}
 </script>
 </body>
