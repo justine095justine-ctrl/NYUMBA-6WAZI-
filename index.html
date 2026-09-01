@@ -2,59 +2,23 @@
 <html>
 <head>
 <title>NYUMBA 6WAZI</title>
-<style>
-body{background:#000;color:#fff;font-family:Arial;padding:10px}
-h2{text-align:center;color:#25D366}
-#chat{height:65vh;border:1px solid #222;overflow:auto;padding:10px;background:#111;border-radius:10px}
-.msg{max-width:75%;margin:6px 0;padding:10px;border-radius:15px;word-wrap:break-word;font-size:16px}
-.me{background:#25D366;color:#000;margin-left:auto;border-bottom-right-radius:3px}
-.you{background:#2a2a2a;color:#fff;margin-right:auto;border-bottom-left-radius:3px}
-.input-area{display:flex;margin-top:10px}
-input{flex:1;padding:12px;background:#222;color:#fff;border:0;border-radius:8px;font-size:16px}
-button{padding:12px 15px;background:#25D366;color:#000;border:0;margin-left:5px;border-radius:8px;font-weight:bold}
-</style>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 <body>
-<h2 style="color:#0f0;text-align:center">NYUMBA 6WAZI CHAT</h2>
-<div id="chat">Inapakia...</div>
-<input id="n" placeholder="Jina">
-<input id="m" placeholder="Ujumbe">
-<button onclick="s()">TUMA</button>
-<script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import{getDatabase,ref,push,onChildAdded}from"https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
-const c={apiKey:"AIzaSyANpw55jBWxMyf6AC1_y7m6idNYhLPyka0",authDomain:"nyumba-6wazi.firebaseapp.com",databaseURL:"https://nyumba-6wazi-default-rtdb.firebaseio.com",projectId:"nyumba-6wazi",storageBucket:"nyumba-6wazi.firebasestorage.app",messagingSenderId:"401684834308",appId:"1:401684834308:web:a65ab41ee55de814ca2d51"};
-const a=initializeApp(c);
-const d=getDatabase(a);
-const r=ref(d,"chat");
-const ch=document.getElementById("chat");
-let myName = localStorage.getItem("myName") || ""; // HII NDIO SIRI
 
-onChildAdded(r,(x)=>{
-  const v=x.val();
-  const name = v.name||v.n||"Mgeni";
-  const msg = v.msg||v.m||"";
-  const e=document.createElement("div");
-  e.className="msg "+(name===myName?"me":"you"); // HAPA INATOFUTIWA
-  e.innerHTML="<b>"+name+"</b><br>"+msg;
-  ch.appendChild(e);
-  ch.scrollTop=ch.scrollHeight;
-  if(ch.innerText.includes("Inapakia"))ch.innerHTML="";
-});
+<h2>NYUMBA 6WAZI 🔥</h2>
+<div id="chat"></div>
 
-window.s=()=>{
-  const n=document.getElementById("n").value;
-  const m=document.getElementById("m").value;
-  if(n&&m){
-    myName=n; 
-    localStorage.setItem("myName",n); // HII INAKUKUMBUKA WEWE
-    push(r,{name:n,msg:m});
-    document.getElementById("m").value="";
-  }
-}
-</script>
-<script>
-document.getElementById("m").addEventListener("keypress", function(e){
-  if(e.key === "Enter"){ s(); }
-});
-</script>
+<div class="input-area">
+  <input id="n" placeholder="Jina lako">
+  <input id="m" placeholder="Andika ujumbe...">
+  <button onclick="tuma()">TUMA</button>
+</div>
+
+<script src="firebase.js"></script>
+</body>
+</html>
