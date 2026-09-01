@@ -1,9 +1,11 @@
-// INJINI YA NYUMBA 6WAZI
-var config={
-  apiKey:"AIzaSyDUMMYKEY123",
-  authDomain:"nyumba6wazi.firebaseapp.com",
-  databaseURL:"https://nyumba6wazi-default-rtdb.firebaseio.com",
-  projectId:"nyumba6wazi"
+const firebaseConfig = {
+  apiKey: "AIzaSyANpw55jBWxMyf6AC1_y7m6idNYhLPyka0",
+  authDomain: "nyumba-6wazi.firebaseapp.com",
+  databaseURL: "https://nyumba-6wazi-default-rtdb.firebaseio.com",
+  projectId: "nyumba-6wazi",
+  storageBucket: "nyumba-6wazi.firebasestorage.app",
+  messagingSenderId: "401684834308",
+  appId: "1:401684834308:web:a65ab41ee55de814ca2d51"
 };
 firebase.initializeApp(config);
 var db=firebase.database().ref("chat");
