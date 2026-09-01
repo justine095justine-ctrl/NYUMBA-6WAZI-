@@ -14,7 +14,7 @@ background:#111;color:#0f0}</style></head><body>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import{getDatabase,ref,push,onValue}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-const c={apiKey:"WEKA-YAKO",authDomain:"nyumba-6wazi.firebaseapp.com",
+const c={apiKey:"-YAIzaSyANpw55jBWxMyf6AC1_y7m6idNYhLPyka0",authDomain:"nyumba-6wazi.firebaseapp.com",
 databaseURL:"https://nyumba-6wazi-default-rtdb.firebaseio.com",projectId:"nyumba-6wazi"};
 const db=getDatabase(initializeApp(c));const r=ref(db,"chat");
 function send(){const n=name.value,t=msg.value;if(t)push(r,{name:n,text:t,time:new Date().toLocaleTimeString('sw-TZ',{h:'2-digit',m:'2-digit'})});msg.value=""}
