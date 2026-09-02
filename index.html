@@ -5,7 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body{background:#000;color:#fff;font-family:Arial;margin:0;padding-bottom:50px}
-#chat{padding:10px;height:calc(100vh - 60px);overflow-y:auto}
+#top{display:flex;justify-content:space-between;align-items:center;padding:10px;background:#111}
+h1{font-size:16px;margin:0}
+#badilijina{background:#00ff88;color:#000;border:none;padding:6px 10px;border-radius:5px;font-weight:bold}
+#chat{padding:10px;height:calc(100vh - 110px);overflow-y:auto}
 .msg{margin:10px;padding:10px;border-radius:8px;max-width:75%;word-wrap:break-word}
 .me{background:#0084ff;margin-left:auto;text-align:right}
 .you{background:#333;margin-right:auto}
@@ -13,12 +16,14 @@ b{display:block;font-size:12px;margin-bottom:4px;color:#00ff88}
 #tuma{position:fixed;bottom:0;left:0;width:100%;display:flex;background:#222}
 #m{flex:1;padding:12px;border:none;background:#333;color:#fff;outline:none}
 #tuma button{width:80px;background:#0084ff;color:#fff;border:none;font-weight:bold}
-h1{text-align:center;padding:10px;background:#111;margin:0;font-size:16px}
 </style>
 </head>
 <body>
 
-<h1>NYUMBA 6WAZI - Chat Group</h1>
+<div id="top">
+  <h1>NYUMBA 6WAZI</h1>
+  <button id="badilijina" onclick="badiliJina()">Badili Jina</button>
+</div>
 <div id="chat"></div>
 
 <div id="tuma">
@@ -34,8 +39,13 @@ firebase.initializeApp(cfg);
 var db=firebase.database();
 var chat=db.ref("chat");
 
-// Jina la default. Kila mtu ataonekana kama "Mgeni"
-var jina = "Mgeni" + Math.floor(Math.random()*1000);
+// 1. ANGALIA KAMA JINA LIPO KWENYE SIMU. LIKIKO TUMIA HILO. LIKO ANDIKA JIPYA
+var jina = localStorage.getItem("nyumba6wazi_jina");
+if(!jina){
+  jina = prompt("Weka jina lako la kuingia NYUMBA 6WAZI:");
+  if(!jina || jina.trim()=="") jina = "Mgeni" + Math.floor(Math.random()*1000);
+  localStorage.setItem("nyumba6wazi_jina", jina);
+}
 
 loadChat();
 
@@ -56,6 +66,15 @@ function tuma(){
   if(!msg) return;
   chat.push({jina:jina, ujumbe:msg, time:Date.now()});
   document.getElementById("m").value = "";
+}
+
+function badiliJina(){
+  var jipya = prompt("Weka jina jipya:", jina);
+  if(jipya && jipya.trim()!=""){
+    jina = jipya;
+    localStorage.setItem("nyumba6wazi_jina", jina);
+    alert("Jina limebadilishwa kuwa: " + jina);
+  }
 }
 </script>
 </body>
