@@ -1,34 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>NYUMBA 6WAZI</title>
+<title>NYUMBA 6WAZI CHAT</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{background:#000;color:#fff;font-family:Arial;margin:0;padding-bottom:50px}
-#top{display:flex;justify-content:space-between;align-items:center;padding:10px;background:#111}
-h1{font-size:16px;margin:0}
-#badilijina{background:#00ff88;color:#000;border:none;padding:6px 10px;border-radius:5px;font-weight:bold}
-#chat{padding:10px;height:calc(100vh - 110px);overflow-y:auto}
-.msg{margin:10px;padding:10px;border-radius:8px;max-width:75%;word-wrap:break-word}
-.me{background:#0084ff;margin-left:auto;text-align:right}
-.you{background:#333;margin-right:auto}
-b{display:block;font-size:12px;margin-bottom:4px;color:#00ff88}
-#tuma{position:fixed;bottom:0;left:0;width:100%;display:flex;background:#222}
-#m{flex:1;padding:12px;border:none;background:#333;color:#fff;outline:none}
-#tuma button{width:80px;background:#0084ff;color:#fff;border:none;font-weight:bold}
+body{background:#000;color:#fff;font-family:Arial;margin:0;padding-bottom:60px}
+#top{text-align:center;padding:12px;background:#111}
+#top h1{color:#00ff00;margin:0;font-size:18px}
+#chat{padding:10px;height:calc(100vh - 120px);overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+.msg{padding:10px 14px;border-radius:18px;max-width:70%;word-wrap:break-word;line-height:1.4}
+.me{background:#00a884;color:#fff;margin-left:auto;border-bottom-right-radius:4px}
+.you{background:#2a2f32;color:#fff;margin-right:auto;border-bottom-left-radius:4px}
+b{display:block;font-size:11px;margin-bottom:3px;font-weight:bold}
+.me b{color:#d1f7c4}
+.you b{color:#00ff00}
+#tuma{position:fixed;bottom:0;left:0;width:100%;display:flex;padding:8px;background:#111;gap:8px}
+#m{flex:1;padding:12px;border:none;background:#2a2f32;color:#fff;outline:none;border-radius:20px}
+#tuma button{width:70px;background:#00a884;color:#fff;border:none;border-radius:50%;font-weight:bold}
 </style>
 </head>
 <body>
 
 <div id="top">
-  <h1>NYUMBA 6WAZI</h1>
-  <button id="badilijina" onclick="badiliJina()">Badili Jina</button>
+  <h1>NYUMBA 6WAZI CHAT</h1>
 </div>
 <div id="chat"></div>
 
 <div id="tuma">
-<input id="m" placeholder="Andika ujumbe..." onkeypress="if(event.key=='Enter')tuma()">
-<button onclick="tuma()">Tuma</button>
+<input id="m" placeholder="Andika ujumbe" onkeypress="if(event.key=='Enter')tuma()">
+<button onclick="tuma()">TUMA</button>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -39,7 +39,7 @@ firebase.initializeApp(cfg);
 var db=firebase.database();
 var chat=db.ref("chat");
 
-// 1. ANGALIA KAMA JINA LIPO KWENYE SIMU. LIKIKO TUMIA HILO. LIKO ANDIKA JIPYA
+// Hifadhi jina
 var jina = localStorage.getItem("nyumba6wazi_jina");
 if(!jina){
   jina = prompt("Weka jina lako la kuingia NYUMBA 6WAZI:");
@@ -66,15 +66,6 @@ function tuma(){
   if(!msg) return;
   chat.push({jina:jina, ujumbe:msg, time:Date.now()});
   document.getElementById("m").value = "";
-}
-
-function badiliJina(){
-  var jipya = prompt("Weka jina jipya:", jina);
-  if(jipya && jipya.trim()!=""){
-    jina = jipya;
-    localStorage.setItem("nyumba6wazi_jina", jina);
-    alert("Jina limebadilishwa kuwa: " + jina);
-  }
 }
 </script>
 </body>
