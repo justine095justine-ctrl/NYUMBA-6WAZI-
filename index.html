@@ -4,10 +4,11 @@
 <title>NYUMBA 6WAZI CHAT</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{background:#0b141a;color:#fff;font-family:Arial;margin:0;padding-bottom:60px}
-#top{text-align:center;padding:12px;background:#1f2c33}
-#top h1{color:#00ff00;margin:0;font-size:18px}
-#chat{padding:10px;height:calc(100vh - 120px);overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+body{background:#0b141a;color:#fff;font-family:Arial;margin:0;padding-bottom:70px}
+#top{text-align:center;padding:10px;background:#1f2c33;position:sticky;top:0}
+#top h1{color:#00ff00;margin:0;font-size:16px}
+#online{font-size:11px;color:#8696a0}
+#chat{padding:10px;height:calc(100vh - 140px);overflow-y:auto;display:flex;flex-direction:column;gap:8px}
 .msg{padding:8px 12px;border-radius:8px;max-width:70%;word-wrap:break-word;line-height:1.4;position:relative}
 .me{background:#005c4b;color:#fff;margin-left:auto;border-bottom-right-radius:2px}
 .you{background:#202c33;color:#fff;margin-right:auto;border-bottom-left-radius:2px}
@@ -15,33 +16,41 @@ b{display:block;font-size:11px;margin-bottom:3px;font-weight:bold}
 .me b{color:#53bdeb}
 .you b{color:#00ff00}
 .time{font-size:10px;color:#8696a0;text-align:right;margin-top:4px}
-.time span{margin-left:5px}
-#tuma{position:fixed;bottom:0;left:0;width:100%;display:flex;padding:8px;background:#1f2c33;gap:8px}
+#typing{font-size:11px;color:#8696a0;padding:0 10px;font-style:italic}
+#tuma{position:fixed;bottom:0;left:0;width:100%;display:flex;padding:8px;background:#1f2c33;gap:5px}
 #m{flex:1;padding:12px;border:none;background:#2a3942;color:#fff;outline:none;border-radius:20px}
-#tuma button{width:50px;height:50px;background:#00a884;color:#fff;border:none;border-radius:50%;font-weight:bold;font-size:18px}
+.btn{width:45px;height:45px;background:#00a884;color:#fff;border:none;border-radius:50%;font-size:18px}
+img.chat-img{max-width:200px;border-radius:8px;margin-top:5px}
 </style>
 </head>
 <body>
 
 <div id="top">
   <h1>NYUMBA 6WAZI CHAT</h1>
+  <div id="online">Watu: 1</div>
 </div>
 <div id="chat"></div>
+<div id="typing"></div>
 
 <div id="tuma">
-<input id="m" placeholder="Andika ujumbe" onkeypress="if(event.key=='Enter')tuma()">
-<button onclick="tuma()">➤</button>
+<input type="file" id="file" style="display:none" accept="image/*" onchange="tumaPicha(event)">
+<button class="btn" onclick="document.getElementById('file').click()">📎</button>
+<input id="m" placeholder="Andika ujumbe" oninput="typing()" onkeypress="if(event.key=='Enter')tuma()">
+<button class="btn" onclick="tuma()">➤</button>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 <script>
 var cfg={apiKey:"AIzaSyANpw55jBwxMyf6AC1_y7m6idNYhLPyka0",authDomain:"nyumba-6wazi.firebaseapp.com",databaseURL:"https://nyumba-6wazi-default-rtdb.firebaseio.com",projectId:"nyumba-6wazi",storageBucket:"nyumba-6wazi.appspot.com",messagingSenderId:"401684834308",appId:"1:401684834308:web:a65ab41ee55de814ca2d51"};
 firebase.initializeApp(cfg);
 var db=firebase.database();
 var chat=db.ref("chat");
+var online=db.ref("online");
+var typingRef=db.ref("typing");
 
-// Hifadhi jina
+// Jina
 var jina = localStorage.getItem("nyumba6wazi_jina");
 if(!jina){
   jina = prompt("Weka jina lako la kuingia NYUMBA 6WAZI:");
@@ -49,35 +58,6 @@ if(!jina){
   localStorage.setItem("nyumba6wazi_jina", jina);
 }
 
-loadChat();
-
-function loadChat(){
-  chat.limitToLast(50).on("child_added",function(s){
-    var d = s.val();
-    if(!d || !d.jina || !d.ujumbe) return;
-    var x = document.createElement("div");
-    var niMimi = d.jina == jina;
-    x.className = "msg " + (niMimi ? "me" : "you");
-    
-    // 1. SAA
-    var saa = new Date(d.time).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-    
-    // 2. ✓✓ DELIVERED
-    var ticks = niMimi ? '<span>✓✓</span>' : '';
-    
-    x.innerHTML = "<b>" + d.jina + "</b>" + d.ujumbe + "<div class='time'>" + saa + ticks + "</div>";
-    document.getElementById("chat").appendChild(x);
-    document.getElementById("chat").scrollTop = 99999;
-  });
-}
-
-function tuma(){
-  var msg = document.getElementById("m").value;
-  if(!msg) return;
-  // 3. EMOJI ZINAFANYA KAZI AUTOMATIC
-  chat.push({jina:jina, ujumbe:msg, time:Date.now()});
-  document.getElementById("m").value = "";
-}
-</script>
-</body>
-</html>
+// 1. ONLINE
+online.child(jina).set(true);
+online.child(j
