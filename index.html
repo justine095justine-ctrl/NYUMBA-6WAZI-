@@ -15,6 +15,7 @@ body{background:#0b141a;color:#fff;font-family:Arial;margin:0}
 .group{padding:15px;background:#202c33;margin-bottom:8px;border-radius:8px;cursor:pointer}
 .group b{display:block}
 .group small{color:#8696a0}
+.addGroup{padding:15px;background:#00a884;margin-bottom:8px;border-radius:8px;cursor:pointer;text-align:center;font-weight:bold}
 #chat{padding:10px;height:calc(100vh - 160px);overflow-y:auto;display:flex;flex-direction:column;gap:8px}
 .msg{padding:8px 12px;border-radius:8px;max-width:70%;word-wrap:break-word;position:relative}
 .me{background:#005c4b;margin-left:auto;border-bottom-right-radius:2px}
@@ -71,13 +72,26 @@ if(!jina){
 var groupIdSasa = "";
 var chatRef, onlineRef, typingRef;
 
-// HII NDIO FIX KUU
+// TENGENEZA MAGROUP YA KUANZIA KAMA HAYAPO
+function tengenezaGroupsMfano(){
+  var mfano = {
+    "nyumba6wazi": {jina:"NYUMBA 6WAZI", maelezo:"Group Kuu ya Marafiki"},
+    "wakuru": {jina:"WAKURU GEN", maelezo:"Watu wa mtaani"},
+    "family": {jina:"FAMILY", maelezo:"Nyumbani"}
+  };
+  db.ref("groups").once("value").then(s=>{
+    if(s.numChildren() == 0){
+      db.ref("groups").set(mfano);
+    }
+  });
+}
+tengenezaGroupsMfano();
+
 function loadGroups(){
   db.ref("groups").on("value", s=>{
     var html = "";
     s.forEach(g=>{
       var data = g.val() || {};
-      // Kama halina jina, tumia ID ya group kama jina
       var jinaGroup = data.jina || g.key.toUpperCase();
       var maelezoGroup = data.maelezo || "Bonyeza kuingia";
       html += `<div class="group" onclick="funguaGroup('${g.key}')">
@@ -85,68 +99,5 @@ function loadGroups(){
         <small>${maelezoGroup}</small>
       </div>`;
     });
-    html += `<div class="group" onclick="tengenezaGroup()"><b>+ Tengeneza Group Mpya</b></div>`;
-    document.getElementById("groupList").innerHTML = html;
-  });
-}
-loadGroups();
-
-function funguaGroup(id){
-  groupIdSasa = id;
-  document.getElementById("home").style.display="none";
-  document.getElementById("chatScreen").style.display="block";
-
-  db.ref("groups/"+id).once("value").then(s=>{
-    var data = s.val() || {};
-    document.getElementById("jinaGroup").innerText = data.jina || id.toUpperCase();
-  });
-
-  onlineRef = db.ref("groups/"+groupIdSasa+"/online");
-  onlineRef.child(jina).set(true);
-  onlineRef.child(jina).onDisconnect().remove();
-  onlineRef.on("value",s=>{document.getElementById("online").innerText="Watu Online: "+s.numChildren()});
-
-  typingRef = db.ref("groups/"+groupIdSasa+"/typing");
-  typingRef.on("value",s=>{
-    var t=[]; s.forEach(c=>{if(c.key!=jina) t.push(c.key)});
-    document.getElementById("typing").innerText = t.length>0? t.join(", ")+" anaandika..." : "";
-  });
-
-  loadChat();
-}
-
-function rudiHome(){
-  if(onlineRef) onlineRef.child(jina).remove();
-  if(chatRef) chatRef.off();
-  if(typingRef) typingRef.off();
-  document.getElementById("home").style.display="block";
-  document.getElementById("chatScreen").style.display="none";
-}
-
-function tengenezaGroup(){
-  var jinaG = prompt("Andika jina la Group jipya:");
-  var maelezo = prompt("Andika maelezo mafupi:");
-  if(jinaG && maelezo){
-    var id = jinaG.toLowerCase().replace(/ /g,"");
-    db.ref("groups/"+id).set({jina:jinaG, maelezo:maelezo, imeundwa:Date.now()});
-  }
-}
-
-var typingTimeout;
-function typing(){
-  typingRef.child(jina).set(true);
-  clearTimeout(typingTimeout);
-  typingTimeout=setTimeout(()=>typingRef.child(jina).remove(),2000);
-}
-
-function loadChat(){
-  chatRef = db.ref("groups/"+groupIdSasa+"/chat");
-  document.getElementById("chat").innerHTML="";
-  chatRef.limitToLast(50).on("child_added",function(s){
-    var d = s.val(); if(!d) return;
-    var x = document.createElement("div");
-    var niMimi = d.jina == jina;
-    x.className = "msg " + (niMimi? "me" : "you");
-    var saa = new Date(d.time).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-    var ticks = niMimi? '<span class="ticks"> ✓✓</span>' : '';
-    var content = d.picha? "<img class='chat-img' src='"+d.picha+"'>" : d.uj
+    // BUTTON YA KUTENGENEZA IKO CHINI KILA WAKATI
+    html += `<div class="addGroup" onclick="tengenezaGroup()">+ Tengeneza Group Mp
