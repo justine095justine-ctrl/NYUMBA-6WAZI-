@@ -33,13 +33,11 @@ img.chat-img{max-width:200px;border-radius:8px;margin-top:5px}
 </head>
 <body>
 
-<!-- PAGE 1: ORODHA YA MAGROUP -->
 <div id="home">
 <div id="top"><h1>NYUMBA 6WAZI CHAT</h1></div>
 <div id="groupList"></div>
 </div>
 
-<!-- PAGE 2: NDANI YA CHAT -->
 <div id="chatScreen">
 <div id="top">
   <span class="back" onclick="rudiHome()">←</span>
@@ -73,14 +71,18 @@ if(!jina){
 var groupIdSasa = "";
 var chatRef, onlineRef, typingRef;
 
+// HII NDIO FIX KUU
 function loadGroups(){
   db.ref("groups").on("value", s=>{
     var html = "";
     s.forEach(g=>{
-      var data = g.val();
+      var data = g.val() || {};
+      // Kama halina jina, tumia ID ya group kama jina
+      var jinaGroup = data.jina || g.key.toUpperCase();
+      var maelezoGroup = data.maelezo || "Bonyeza kuingia";
       html += `<div class="group" onclick="funguaGroup('${g.key}')">
-        <b>${data.jina}</b>
-        <small>${data.maelezo}</small>
+        <b>${jinaGroup}</b>
+        <small>${maelezoGroup}</small>
       </div>`;
     });
     html += `<div class="group" onclick="tengenezaGroup()"><b>+ Tengeneza Group Mpya</b></div>`;
@@ -95,16 +97,15 @@ function funguaGroup(id){
   document.getElementById("chatScreen").style.display="block";
 
   db.ref("groups/"+id).once("value").then(s=>{
-    document.getElementById("jinaGroup").innerText = s.val().jina;
+    var data = s.val() || {};
+    document.getElementById("jinaGroup").innerText = data.jina || id.toUpperCase();
   });
 
-  // 1. ONLINE
   onlineRef = db.ref("groups/"+groupIdSasa+"/online");
   onlineRef.child(jina).set(true);
   onlineRef.child(jina).onDisconnect().remove();
   onlineRef.on("value",s=>{document.getElementById("online").innerText="Watu Online: "+s.numChildren()});
 
-  // 2. TYPING
   typingRef = db.ref("groups/"+groupIdSasa+"/typing");
   typingRef.on("value",s=>{
     var t=[]; s.forEach(c=>{if(c.key!=jina) t.push(c.key)});
@@ -127,7 +128,6 @@ function tengenezaGroup(){
   var maelezo = prompt("Andika maelezo mafupi:");
   if(jinaG && maelezo){
     var id = jinaG.toLowerCase().replace(/ /g,"");
-    // HII NDIO ILIKUWA INAKOSEA: SASA INASEV FIREBASE
     db.ref("groups/"+id).set({jina:jinaG, maelezo:maelezo, imeundwa:Date.now()});
   }
 }
@@ -148,31 +148,5 @@ function loadChat(){
     var niMimi = d.jina == jina;
     x.className = "msg " + (niMimi? "me" : "you");
     var saa = new Date(d.time).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-    // 3. BLUE TICKS ✓✓
     var ticks = niMimi? '<span class="ticks"> ✓✓</span>' : '';
-    var content = d.picha? "<img class='chat-img' src='"+d.picha+"'>" : d.ujumbe;
-    x.innerHTML = "<b class='name'>" + d.jina + "</b>" + content + "<div class='time'>" + saa + ticks + "</div>";
-    document.getElementById("chat").appendChild(x);
-    document.getElementById("chat").scrollTop = 99999;
-  });
-}
-
-function tumaPicha(e){
-  var file=e.target.files[0]; if(!file) return;
-  var reader=new FileReader();
-  reader.onload=function(ev){
-    chatRef.push({jina:jina, picha:ev.target.result, time:Date.now()});
-  }
-  reader.readAsDataURL(file);
-}
-
-function tuma(){
-  var msg = document.getElementById("m").value;
-  if(!msg) return;
-  chatRef.push({jina:jina, ujumbe:msg, time:Date.now()});
-  document.getElementById("m").value = "";
-  typingRef.child(jina).remove();
-}
-</script>
-</body>
-</html>
+    var content = d.picha? "<img class='chat-img' src='"+d.picha+"'>" : d.u
