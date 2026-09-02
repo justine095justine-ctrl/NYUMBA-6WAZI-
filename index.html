@@ -72,38 +72,33 @@ if(!jina){
 var groupIdSasa = "";
 var chatRef, onlineRef, typingRef;
 
+// LAZIMISHA KWA NGUVU
 function tengenezaGroupsMfano(){
-  var mfano = {
-    "nyumba6wazi": {jina:"NYUMBA 6WAZI", maelezo:"Group Kuu ya Marafiki"},
-    "wakuru": {jina:"WAKURU GEN", maelezo:"Watu wa mtaani"},
-    "family": {jina:"FAMILY", maelezo:"Nyumbani"}
-  };
-  db.ref("groups").once("value").then(s=>{
-    if(s.numChildren() == 0){
-      db.ref("groups").set(mfano);
-    }
-  });
+  db.ref("groups/nyumba6wazi").set({jina:"NYUMBA 6WAZI", maelezo:"Group Kuu ya Marafiki"})
+ .catch(e=>alert("ERROR: "+e.message));
+  db.ref("groups/wakuru").set({jina:"WAKURU GEN", maelezo:"Watu wa mtaani"})
+ .catch(e=>alert("ERROR: "+e.message));
+  db.ref("groups/family").set({jina:"FAMILY", maelezo:"Nyumbani"})
+ .catch(e=>alert("ERROR: "+e.message));
 }
-tengenezaGroupsMfano();
+setTimeout(tengenezaGroupsMfano, 1000);
 
 function loadGroups(){
   db.ref("groups").on("value", s=>{
+    console.log("Magroup yaliyopatikana:", s.numChildren());
     var html = "";
     s.forEach(g=>{
       var data = g.val() || {};
-      // HII NDIO FIX: Kama halina jina USIONYESHE
       if(data.jina){
-        var jinaGroup = data.jina;
-        var maelezoGroup = data.maelezo || "Bonyeza kuingia";
         html += `<div class="group" onclick="funguaGroup('${g.key}')">
-          <b>${jinaGroup}</b>
-          <small>${maelezoGroup}</small>
+          <b>${data.jina}</b>
+          <small>${data.maelezo}</small>
         </div>`;
       }
     });
     html += `<div class="addGroup" onclick="tengenezaGroup()">+ Tengeneza Group Mpya</div>`;
     document.getElementById("groupList").innerHTML = html;
-  });
+  }, e=>{alert("KOSA LA KUSOMA FIREBASE: "+e.message)});
 }
 loadGroups();
 
@@ -111,23 +106,18 @@ function funguaGroup(id){
   groupIdSasa = id;
   document.getElementById("home").style.display="none";
   document.getElementById("chatScreen").style.display="block";
-
   db.ref("groups/"+id).once("value").then(s=>{
-    var data = s.val() || {};
-    document.getElementById("jinaGroup").innerText = data.jina || id.toUpperCase();
+    document.getElementById("jinaGroup").innerText = s.val().jina;
   });
-
   onlineRef = db.ref("groups/"+groupIdSasa+"/online");
   onlineRef.child(jina).set(true);
   onlineRef.child(jina).onDisconnect().remove();
   onlineRef.on("value",s=>{document.getElementById("online").innerText="Watu Online: "+s.numChildren()});
-
   typingRef = db.ref("groups/"+groupIdSasa+"/typing");
   typingRef.on("value",s=>{
     var t=[]; s.forEach(c=>{if(c.key!=jina) t.push(c.key)});
     document.getElementById("typing").innerText = t.length>0? t.join(", ")+" anaandika..." : "";
   });
-
   loadChat();
 }
 
@@ -144,7 +134,8 @@ function tengenezaGroup(){
   var maelezo = prompt("Andika maelezo mafupi:");
   if(jinaG && maelezo){
     var id = jinaG.toLowerCase().replace(/ /g,"");
-    db.ref("groups/"+id).set({jina:jinaG, maelezo:maelezo, imeundwa:Date.now()});
+    db.ref("groups/"+id).set({jina:jinaG, maelezo:maelezo})
+   .catch(e=>alert("KOSA: "+e.message));
   }
 }
 
@@ -190,4 +181,4 @@ function tuma(){
 }
 </script>
 </body>
-</ht
+</html>
