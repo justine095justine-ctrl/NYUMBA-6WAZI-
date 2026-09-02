@@ -4,19 +4,21 @@
 <title>NYUMBA 6WAZI CHAT</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{background:#000;color:#fff;font-family:Arial;margin:0;padding-bottom:60px}
-#top{text-align:center;padding:12px;background:#111}
+body{background:#0b141a;color:#fff;font-family:Arial;margin:0;padding-bottom:60px}
+#top{text-align:center;padding:12px;background:#1f2c33}
 #top h1{color:#00ff00;margin:0;font-size:18px}
 #chat{padding:10px;height:calc(100vh - 120px);overflow-y:auto;display:flex;flex-direction:column;gap:8px}
-.msg{padding:10px 14px;border-radius:18px;max-width:70%;word-wrap:break-word;line-height:1.4}
-.me{background:#00a884;color:#fff;margin-left:auto;border-bottom-right-radius:4px}
-.you{background:#2a2f32;color:#fff;margin-right:auto;border-bottom-left-radius:4px}
+.msg{padding:8px 12px;border-radius:8px;max-width:70%;word-wrap:break-word;line-height:1.4;position:relative}
+.me{background:#005c4b;color:#fff;margin-left:auto;border-bottom-right-radius:2px}
+.you{background:#202c33;color:#fff;margin-right:auto;border-bottom-left-radius:2px}
 b{display:block;font-size:11px;margin-bottom:3px;font-weight:bold}
-.me b{color:#d1f7c4}
+.me b{color:#53bdeb}
 .you b{color:#00ff00}
-#tuma{position:fixed;bottom:0;left:0;width:100%;display:flex;padding:8px;background:#111;gap:8px}
-#m{flex:1;padding:12px;border:none;background:#2a2f32;color:#fff;outline:none;border-radius:20px}
-#tuma button{width:70px;background:#00a884;color:#fff;border:none;border-radius:50%;font-weight:bold}
+.time{font-size:10px;color:#8696a0;text-align:right;margin-top:4px}
+.time span{margin-left:5px}
+#tuma{position:fixed;bottom:0;left:0;width:100%;display:flex;padding:8px;background:#1f2c33;gap:8px}
+#m{flex:1;padding:12px;border:none;background:#2a3942;color:#fff;outline:none;border-radius:20px}
+#tuma button{width:50px;height:50px;background:#00a884;color:#fff;border:none;border-radius:50%;font-weight:bold;font-size:18px}
 </style>
 </head>
 <body>
@@ -28,7 +30,7 @@ b{display:block;font-size:11px;margin-bottom:3px;font-weight:bold}
 
 <div id="tuma">
 <input id="m" placeholder="Andika ujumbe" onkeypress="if(event.key=='Enter')tuma()">
-<button onclick="tuma()">TUMA</button>
+<button onclick="tuma()">➤</button>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -54,8 +56,16 @@ function loadChat(){
     var d = s.val();
     if(!d || !d.jina || !d.ujumbe) return;
     var x = document.createElement("div");
-    x.className = "msg " + (d.jina == jina ? "me" : "you");
-    x.innerHTML = "<b>" + d.jina + "</b>" + d.ujumbe;
+    var niMimi = d.jina == jina;
+    x.className = "msg " + (niMimi ? "me" : "you");
+    
+    // 1. SAA
+    var saa = new Date(d.time).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+    
+    // 2. ✓✓ DELIVERED
+    var ticks = niMimi ? '<span>✓✓</span>' : '';
+    
+    x.innerHTML = "<b>" + d.jina + "</b>" + d.ujumbe + "<div class='time'>" + saa + ticks + "</div>";
     document.getElementById("chat").appendChild(x);
     document.getElementById("chat").scrollTop = 99999;
   });
@@ -64,6 +74,7 @@ function loadChat(){
 function tuma(){
   var msg = document.getElementById("m").value;
   if(!msg) return;
+  // 3. EMOJI ZINAFANYA KAZI AUTOMATIC
   chat.push({jina:jina, ujumbe:msg, time:Date.now()});
   document.getElementById("m").value = "";
 }
