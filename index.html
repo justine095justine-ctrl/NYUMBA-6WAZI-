@@ -32,10 +32,16 @@ b.name{display:block;font-size:11px;margin-bottom:3px}
 .time{font-size:10px;color:#8696a0;text-align:right;margin-top:4px}
 .ticks{color:#53bdeb}
 #typing{font-size:11px;color:#8696a0;padding:0 10px;font-style:italic;height:20px}
-#tuma{position:fixed;bottom:0;left:0;width:100%;display:flex;padding:8px;background:#1f2c33;gap:5px}
+#tuma{position:fixed;bottom:0;left:0;width:100%;display:flex;padding:8px;background:#1f2c33;gap:5px;align-items:center}
 #m{flex:1;padding:12px;border:none;background:#2a3942;color:#fff;outline:none;border-radius:20px}
 .btn{width:45px;height:45px;background:#00a884;color:#fff;border:none;border-radius:50%;font-size:18px}
+.btn:active{background:#008069}
 img.chat-img{max-width:200px;border-radius:8px;margin-top:5px}
+audio{max-width:180px;margin-top:5px}
+.emojiPanel{display:none;position:fixed;bottom:60px;left:0;width:100%;background:#1f2c33;padding:10px;max-height:200px;overflow-y:auto}
+.emoji{font-size:24px;padding:5px;cursor:pointer;display:inline-block}
+.deleteBtn{position:absolute;top:-5px;right:-5px;background:red;color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:10px;display:none}
+.msg:hover.deleteBtn{display:block}
 </style>
 </head>
 <body>
@@ -53,15 +59,17 @@ img.chat-img{max-width:200px;border-radius:8px;margin-top:5px}
 </div>
 <div id="chat"></div>
 <div id="typing"></div>
+<div class="emojiPanel" id="emojiPanel"></div>
 <div id="tuma">
+<button class="btn" onclick="toggleEmoji()">😂</button>
 <input type="file" id="file" style="display:none" accept="image/*" onchange="tumaPicha(event)">
 <button class="btn" onclick="document.getElementById('file').click()">📎</button>
 <input id="m" placeholder="Andika ujumbe" oninput="typing()" onkeypress="if(event.key=='Enter')tuma()">
+<button class="btn" id="btnMic" onmousedown="startRecord()" onmouseup="stopRecord()">🎤</button>
 <button class="btn" onclick="tuma()">➤</button>
 </div>
 </div>
 
-<!-- POPUP YA KUTENGENEZA GROUP -->
 <div id="popup">
   <div class="popupBox">
     <h3 style="margin-top:0;color:#00ff00">Tengeneza Group Mpya</h3>
@@ -88,6 +96,23 @@ if(!jina){
 
 var groupIdSasa = "";
 var chatRef, onlineRef, typingRef;
+var mediaRecorder, audioChunks = [];
+
+// EMOJIS
+var emojis = ["😂","❤️","👍","🔥","😭","🙏","😎","💯","🤣","😍"];
+function toggleEmoji(){
+  var p = document.getElementById("emojiPanel");
+  p.style.display = p.style.display=="block"?"none":"block";
+  if(p.innerHTML==""){
+    emojis.forEach(e=>{
+      p.innerHTML += `<span class="emoji" onclick="addEmoji('${e}')">${e}</span>`;
+    });
+  }
+}
+function addEmoji(e){
+  document.getElementById("m").value += e;
+  toggleEmoji();
+}
 
 function tengenezaGroupsMfano(){
   db.ref("groups/nyumba6wazi").set({jina:"NYUMBA 6WAZI", maelezo:"Group Kuu ya Marafiki"});
@@ -114,15 +139,8 @@ function loadGroups(){
 }
 loadGroups();
 
-function openPopup(){
-  document.getElementById("popup").style.display="flex";
-  document.getElementById("inputJina").value="";
-  document.getElementById("inputMaelezo").value="";
-}
-function closePopup(){
-  document.getElementById("popup").style.display="none";
-}
-
+function openPopup(){document.getElementById("popup").style.display="flex"}
+function closePopup(){document.getElementById("popup").style.display="none"}
 function saveGroup(){
   var jinaG = document.getElementById("inputJina").value;
   var maelezo = document.getElementById("inputMaelezo").value;
@@ -130,8 +148,6 @@ function saveGroup(){
     var id = jinaG.toLowerCase().replace(/ /g,"");
     db.ref("groups/"+id).set({jina:jinaG, maelezo:maelezo});
     closePopup();
-  }else{
-    alert("Jaza jina na maelezo");
   }
 }
 
@@ -177,13 +193,24 @@ function loadChat(){
     var x = document.createElement("div");
     var niMimi = d.jina == jina;
     x.className = "msg " + (niMimi? "me" : "you");
+    x.id = s.key;
     var saa = new Date(d.time).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
     var ticks = niMimi? '<span class="ticks"> ✓✓</span>' : '';
-    var content = d.picha? "<img class='chat-img' src='"+d.picha+"'>" : d.ujumbe;
-    x.innerHTML = "<b class='name'>" + d.jina + "</b>" + content + "<div class='time'>" + saa + ticks + "</div>";
+    var delBtn = niMimi? `<button class="deleteBtn" onclick="futaMsg('${s.key}')">x</button>` : '';
+    var content = "";
+    if(d.picha) content = "<img class='chat-img' src='"+d.picha+"'>";
+    else if(d.saunti) content = `<audio controls src="${d.saunti}"></audio>`;
+    else content = d.ujumbe;
+    x.innerHTML = delBtn + "<b class='name'>" + d.jina + "</b>" + content + "<div class='time'>" + saa + ticks + "</div>";
     document.getElementById("chat").appendChild(x);
     document.getElementById("chat").scrollTop = 99999;
   });
+}
+
+function futaMsg(key){
+  if(confirm("Una uhakika kufuta meseji hii?")){
+    db.ref("groups/"+groupIdSasa+"/chat/"+key).remove();
+  }
 }
 
 function tumaPicha(e){
@@ -195,6 +222,29 @@ function tumaPicha(e){
   reader.readAsDataURL(file);
 }
 
+// VOICE NOTE
+function startRecord(){
+  navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
+    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+    mediaRecorder.onstop = () =>{
+      var blob = new Blob(audioChunks, {type:'audio/webm'});
+      var reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = () =>{
+        chatRef.push({jina:jina, saunti:reader.result, time:Date.now()});
+      }
+    };
+    mediaRecorder.start();
+    document.getElementById("btnMic").style.background="red";
+  });
+}
+function stopRecord(){
+  if(mediaRecorder) mediaRecorder.stop();
+  document.getElementById("btnMic").style.background="#00a884";
+}
+
 function tuma(){
   var msg = document.getElementById("m").value;
   if(!msg) return;
@@ -204,4 +254,4 @@ function tuma(){
 }
 </script>
 </body>
-</html
+    </html>
