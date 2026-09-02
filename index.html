@@ -1,13 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>6WAZI CHAT TZ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root{--bg:#0b141a;--panel:#1f2c33;--msg1:#4B0082;--msg2:#202c33;--text:#fff;--main:#7B2FFF}
+body.light{--bg:#f0f2f5;--panel:#fff;--msg1:#E6E0FF;--msg2:#fff;--text:#000;--main:#7B2FFF}
+body{background:var(--bg);color:var(--text);font-family:Arial;margin:0}
+#loginScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);display:flex;justify-content:center;align-items:center;z-index:1000}
+.loginBox{background:var(--panel);padding:30px;border-radius:10px;text-align:center;width:80%;max-width:320px}
+.loginBox input{width:100%;padding:12px;margin:8px 0;background:#2a3942;border:none;color:var(--text);border-radius:5px;box-sizing:border-box}
+.loginBox button{width:100%;padding:12px;background:var(--main);color:#fff;border:none;border-radius:5px;font-weight:bold}
+.policy{font-size:10px;color:#8696a0;margin-top:10px;text-align:left}
+#home{display:none}#chatScreen{display:none}#statusScreen{display:none}
+#top{text-align:center;padding:10px;background:var(--panel);position:sticky;top:0;display:flex;justify-content:space-between;align-items:center}
+#top h1{color:var(--main);margin:0;font-size:16px}
+.tab{padding:10px;background:var(--panel);display:flex}
+.tab button{flex:1;padding:10px;border:none;background:transparent;color:var(--text);font-weight:bold}
+.tab .active{border-bottom:2px solid var(--main);color:var(--main)}
+.back{color:var(--main);cursor:pointer;font-size:20px}
+#online{font-size:11px;color:#8696a0}
+#groupList,#statusList{padding:10px}
+.group,.status{padding:15px;background:var(--panel);margin-bottom:8px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:10px}
+.group b,.status b{display:block}
+.group small,.status small{color:#8696a0}
+.pfp{width:40px;height:40px;border-radius:50%;background:var(--main);display:flex;justify-content:center;align-items:center;font-weight:bold;color:#fff}
+.addGroup{padding:15px;background:var(--main);margin-bottom:8px;border-radius:8px;cursor:pointer;text-align:center;font-weight:bold;color:#fff}
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <div class="loginBox">
+    <h2 style="color:var(--main)">6WAZI CHAT TZ</h2>
+    <input id="loginJina" placeholder="Weka Jina Lako">
+    <input id="loginPass" type="password" placeholder="Weka Neno la siri">
+    <button onclick="login()">Ingia</button>
+    <div class="policy">
+      <b>Sera ya Faragha:</b> Tunahifadhi jina lako na meseji tu ndani ya server yetu. 
+      Hatushiriki na mtu yeyote. Kama una tatizo tuma email: support@6wazi.tz
+    </div>
+  </div>
+</div>
+
+<div id="home">
+<div id="top">
+  <h1>6WAZI CHAT TZ</h1>
+  <button onclick="document.body.classList.toggle('light')">🌙</button>
+</div>
+<div class="tab">
+  <button class="active" onclick="showTab('chats')">CHATS</button>
+  <button onclick="showTab('status')">STATUS</button>
+</div>
+<div id="groupList"></div>
+<div id="statusList" style="display:none"></div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 <script>
 var cfg={apiKey:"AIzaSyANpw55jBwxMyf6AC1_y7m6idNYhLPyka0",authDomain:"nyumba-6wazi.firebaseapp.com",databaseURL:"https://nyumba-6wazi-default-rtdb.firebaseio.com",projectId:"nyumba-6wazi",storageBucket:"nyumba-6wazi.appspot.com",messagingSenderId:"401684834308",appId:"1:401684834308:web:a65ab41ee55de814ca2d51"};
 firebase.initializeApp(cfg);
 var db=firebase.database();
+var jina="";
 
-var jina="", groupIdSasa="", chatRef, onlineRef, typingRef;
-
-// LOGIN ILIYOREKEBISHWA
+// LOGIN
 function login(){
   jina = document.getElementById("loginJina").value.trim();
   var pass = document.getElementById("loginPass").value.trim();
@@ -15,13 +72,9 @@ function login(){
     localStorage.setItem("nyumba6wazi_jina", jina);
     document.getElementById("loginScreen").style.display="none";
     document.getElementById("home").style.display="block";
-    initApp(); // HII NDIYO ILIKUA INAKOSEA
-  }else{
-    alert("Tafadhali jaza Jina na Neno la Siri");
-  }
+    initApp();
+  }else{ alert("Tafadhali jaza Jina na Neno la Siri"); }
 }
-
-// KUINGIA KIOTOMATIKI KAMA ULISHAINGIA
 window.onload = function(){
   if(localStorage.getItem("nyumba6wazi_jina")){
     jina = localStorage.getItem("nyumba6wazi_jina");
@@ -30,13 +83,46 @@ window.onload = function(){
     initApp();
   }
 }
-
 function initApp(){
   tengenezaGroupsMfano();
   loadGroups();
   loadStatus();
 }
-
-// ... WEKA CODE YOTE ILIYOBAKI KAMA ILIYO HIVI HIVI ...
-
-  </script>
+function showTab(tab){
+  document.querySelectorAll(".tab button").forEach(b=>b.classList.remove("active"));
+  if(tab=="chats"){
+    document.querySelector(".tab button:nth-child(1)").classList.add("active");
+    document.getElementById("groupList").style.display="block";
+    document.getElementById("statusList").style.display="none";
+  }else{
+    document.querySelector(".tab button:nth-child(2)").classList.add("active");
+    document.getElementById("groupList").style.display="none";
+    document.getElementById("statusList").style.display="block";
+  }
+}
+function tengenezaGroupsMfano(){
+  db.ref("groups/nyumba6wazi").set({jina:"NYUMBA 6WAZI", maelezo:"Group Kuu ya Marafiki"});
+}
+function loadGroups(){
+  db.ref("groups").on("value", s=>{
+    var html = "";
+    s.forEach(g=>{
+      var data = g.val() || {};
+      if(data.jina){
+        html += `<div class="group"><div class="pfp">${data.jina[0]}</div><div><b>${data.jina}</b><small>${data.maelezo}</small></div></div>`;
+      }
+    });
+    html += `<div class="addGroup">+ Tengeneza Group Mpya</div>`;
+    document.getElementById("groupList").innerHTML = html;
+  });
+}
+function loadStatus(){
+  db.ref("status").on("value", s=>{
+    var html = `<div class="status"><div class="pfp">+</div><div><b>Stato Yangu</b><small>Bofya kuongeza</small></div></div>`;
+    s.forEach(st=>{ html += `<div class="status"><div class="pfp">${st.key[0]}</div><div><b>${st.key}</b><small>Status mpya</small></div></div>`; });
+    document.getElementById("statusList").innerHTML = html;
+  });
+}
+</script>
+</body>
+</html>
