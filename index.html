@@ -41,7 +41,6 @@ img.chat-img{max-width:200px;border-radius:8px;margin-top:5px}
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 <script>
 var cfg={apiKey:"AIzaSyANpw55jBwxMyf6AC1_y7m6idNYhLPyka0",authDomain:"nyumba-6wazi.firebaseapp.com",databaseURL:"https://nyumba-6wazi-default-rtdb.firebaseio.com",projectId:"nyumba-6wazi",storageBucket:"nyumba-6wazi.appspot.com",messagingSenderId:"401684834308",appId:"1:401684834308:web:a65ab41ee55de814ca2d51"};
 firebase.initializeApp(cfg);
@@ -50,7 +49,6 @@ var chat=db.ref("chat");
 var online=db.ref("online");
 var typingRef=db.ref("typing");
 
-// Jina
 var jina = localStorage.getItem("nyumba6wazi_jina");
 if(!jina){
   jina = prompt("Weka jina lako la kuingia NYUMBA 6WAZI:");
@@ -58,6 +56,54 @@ if(!jina){
   localStorage.setItem("nyumba6wazi_jina", jina);
 }
 
-// 1. ONLINE
 online.child(jina).set(true);
-online.child(j
+online.child(jina).onDisconnect().remove();
+online.on("value",s=>{document.getElementById("online").innerText="Watu Online: "+s.numChildren()});
+
+var typingTimeout;
+function typing(){
+  typingRef.child(jina).set(true);
+  clearTimeout(typingTimeout);
+  typingTimeout=setTimeout(()=>typingRef.child(jina).remove(),2000);
+}
+typingRef.on("value",s=>{
+  var t=[]; s.forEach(c=>{if(c.key!=jina) t.push(c.key)});
+  document.getElementById("typing").innerText = t.length>0? t.join(", ")+" anaandika..." : "";
+})
+
+loadChat();
+function loadChat(){
+  chat.limitToLast(50).on("child_added",function(s){
+    var d = s.val(); if(!d) return;
+    var x = document.createElement("div");
+    var niMimi = d.jina == jina;
+    x.className = "msg " + (niMimi? "me" : "you");
+    var saa = new Date(d.time).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+    var ticks = niMimi? '<span> ✓✓</span>' : '';
+    var content = d.picha? "<img class='chat-img' src='"+d.picha+"'>" : d.ujumbe;
+    x.innerHTML = "<b>" + d.jina + "</b>" + content + "<div class='time'>" + saa + ticks + "</div>";
+    document.getElementById("chat").appendChild(x);
+    document.getElementById("chat").scrollTop = 99999;
+  });
+}
+
+// HII NDIO MPYA: INATUMA PICHA BILA STORAGE
+function tumaPicha(e){
+  var file=e.target.files[0]; if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    chat.push({jina:jina, picha:ev.target.result, time:Date.now()});
+  }
+  reader.readAsDataURL(file);
+}
+
+function tuma(){
+  var msg = document.getElementById("m").value;
+  if(!msg) return;
+  chat.push({jina:jina, ujumbe:msg, time:Date.now()});
+  document.getElementById("m").value = "";
+  typingRef.child(jina).remove();
+}
+</script>
+</body>
+</html>
