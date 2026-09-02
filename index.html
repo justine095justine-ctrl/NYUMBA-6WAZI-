@@ -4,58 +4,90 @@
 <title>NYUMBA 6WAZI CHAT</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{background:#0b141a;color:#fff;font-family:Arial;margin:0}
-#home{display:block}
+:root{--bg:#0b141a;--panel:#1f2c33;--msg1:#005c4b;--msg2:#202c33;--text:#fff}
+body.light{--bg:#f0f2f5;--panel:#fff;--msg1:#d9fdd3;--msg2:#fff;--text:#000}
+body{background:var(--bg);color:var(--text);font-family:Arial;margin:0}
+#loginScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);display:flex;justify-content:center;align-items:center;z-index:1000}
+.loginBox{background:var(--panel);padding:30px;border-radius:10px;text-align:center;width:80%;max-width:300px}
+.loginBox input{width:100%;padding:12px;margin:8px 0;background:#2a3942;border:none;color:var(--text);border-radius:5px}
+.loginBox button{width:100%;padding:12px;background:#00a884;color:#fff;border:none;border-radius:5px;font-weight:bold}
+#home{display:none}
 #chatScreen{display:none}
-#top{text-align:center;padding:10px;background:#1f2c33;position:sticky;top:0}
+#statusScreen{display:none}
+#top{text-align:center;padding:10px;background:var(--panel);position:sticky;top:0;display:flex;justify-content:space-between;align-items:center}
 #top h1{color:#00ff00;margin:0;font-size:16px}
-.back{float:left;color:#00a884;cursor:pointer;font-size:20px}
+.tab{padding:10px;background:var(--panel);display:flex}
+.tab button{flex:1;padding:10px;border:none;background:transparent;color:var(--text);font-weight:bold}
+.tab.active{border-bottom:2px solid #00a884;color:#00a884}
+.back{color:#00a884;cursor:pointer;font-size:20px}
 #online{font-size:11px;color:#8696a0}
-#groupList{padding:10px}
-.group{padding:15px;background:#202c33;margin-bottom:8px;border-radius:8px;cursor:pointer}
-.group b{display:block}
-.group small{color:#8696a0}
-.addGroup{padding:15px;background:#00a884;margin-bottom:8px;border-radius:8px;cursor:pointer;text-align:center;font-weight:bold}
+#groupList,#statusList{padding:10px}
+.group,.status{padding:15px;background:var(--panel);margin-bottom:8px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:10px}
+.group b,.status b{display:block}
+.group small,.status small{color:#8696a0}
+.pfp{width:40px;height:40px;border-radius:50%;background:#00a884;display:flex;justify-content:center;align-items:center;font-weight:bold}
+.addGroup{padding:15px;background:#00a884;margin-bottom:8px;border-radius:8px;cursor:pointer;text-align:center;font-weight:bold;color:#fff}
 #popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:none;justify-content:center;align-items:center;z-index:999}
-.popupBox{background:#1f2c33;padding:20px;border-radius:10px;width:80%;max-width:300px}
-.popupBox input{width:100%;padding:10px;margin:8px 0;background:#2a3942;border:none;color:#fff;border-radius:5px}
+.popupBox{background:var(--panel);padding:20px;border-radius:10px;width:80%;max-width:300px}
+.popupBox input{width:100%;padding:10px;margin:8px 0;background:#2a3942;border:none;color:var(--text);border-radius:5px}
 .popupBox button{width:100%;padding:10px;margin-top:5px;border:none;border-radius:5px;font-weight:bold}
 .btnSave{background:#00a884;color:#fff}
 .btnCancel{background:#8696a0;color:#fff}
 #chat{padding:10px;height:calc(100vh - 160px);overflow-y:auto;display:flex;flex-direction:column;gap:8px}
 .msg{padding:8px 12px;border-radius:8px;max-width:70%;word-wrap:break-word;position:relative}
-.me{background:#005c4b;margin-left:auto;border-bottom-right-radius:2px}
-.you{background:#202c33;margin-right:auto;border-bottom-left-radius:2px}
+.me{background:var(--msg1);margin-left:auto;border-bottom-right-radius:2px}
+.you{background:var(--msg2);margin-right:auto;border-bottom-left-radius:2px}
 b.name{display:block;font-size:11px;margin-bottom:3px}
 .me b.name{color:#53bdeb}
 .you b.name{color:#00ff00}
 .time{font-size:10px;color:#8696a0;text-align:right;margin-top:4px}
 .ticks{color:#53bdeb}
 #typing{font-size:11px;color:#8696a0;padding:0 10px;font-style:italic;height:20px}
-#tuma{position:fixed;bottom:0;left:0;width:100%;display:flex;padding:8px;background:#1f2c33;gap:5px;align-items:center}
-#m{flex:1;padding:12px;border:none;background:#2a3942;color:#fff;outline:none;border-radius:20px}
+#tuma{position:fixed;bottom:0;left:0;width:100%;display:flex;padding:8px;background:var(--panel);gap:5px;align-items:center}
+#m{flex:1;padding:12px;border:none;background:#2a3942;color:var(--text);outline:none;border-radius:20px}
 .btn{width:45px;height:45px;background:#00a884;color:#fff;border:none;border-radius:50%;font-size:18px}
-.btn:active{background:#008069}
 img.chat-img{max-width:200px;border-radius:8px;margin-top:5px}
 audio{max-width:180px;margin-top:5px}
-.emojiPanel{display:none;position:fixed;bottom:60px;left:0;width:100%;background:#1f2c33;padding:10px;max-height:200px;overflow-y:auto}
+.emojiPanel{display:none;position:fixed;bottom:60px;left:0;width:100%;background:var(--panel);padding:10px;max-height:200px;overflow-y:auto}
 .emoji{font-size:24px;padding:5px;cursor:pointer;display:inline-block}
-.deleteBtn{position:absolute;top:-5px;right:-5px;background:red;color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:10px;display:none}
-.msg:hover.deleteBtn{display:block}
+.deleteBtn{position:absolute;top:-5px;right:-5px;background:red;color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:10px}
 </style>
 </head>
 <body>
 
-<div id="home">
-<div id="top"><h1>NYUMBA 6WAZI CHAT</h1></div>
-<div id="groupList"></div>
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="loginBox">
+    <h2 style="color:#00ff00">NYUMBA 6WAZI</h2>
+    <input id="loginJina" placeholder="Weka Jina Lako">
+    <input id="loginPass" type="password" placeholder="Weka Neno la siri">
+    <button onclick="login()">Ingia</button>
+  </div>
 </div>
 
+<!-- HOME -->
+<div id="home">
+<div id="top">
+  <h1>NYUMBA 6WAZI</h1>
+  <button onclick="toggleTheme()">🌙</button>
+</div>
+<div class="tab">
+  <button class="active" onclick="showTab('chats')">CHATS</button>
+  <button onclick="showTab('status')">STATUS</button>
+</div>
+<div id="groupList"></div>
+<div id="statusList" style="display:none"></div>
+</div>
+
+<!-- CHAT -->
 <div id="chatScreen">
 <div id="top">
   <span class="back" onclick="rudiHome()">←</span>
-  <h1 id="jinaGroup">Group</h1>
-  <div id="online">Watu Online: 0</div>
+  <div>
+    <h1 id="jinaGroup">Group</h1>
+    <div id="online">Watu Online: 0</div>
+  </div>
+  <span class="back" onclick="pigaSimu()">📞</span>
 </div>
 <div id="chat"></div>
 <div id="typing"></div>
@@ -70,12 +102,23 @@ audio{max-width:180px;margin-top:5px}
 </div>
 </div>
 
+<!-- STATUS -->
+<div id="statusScreen">
+<div id="top">
+  <span class="back" onclick="rudiHome()">←</span>
+  <h1>Status Yangu</h1>
+  <span class="back" onclick="wekaStatus()">+</span>
+</div>
+<div id="myStatus"></div>
+</div>
+
+<!-- POPUP -->
 <div id="popup">
   <div class="popupBox">
-    <h3 style="margin-top:0;color:#00ff00">Tengeneza Group Mpya</h3>
-    <input id="inputJina" placeholder="Jina la Group">
-    <input id="inputMaelezo" placeholder="Maelezo mafupi">
-    <button class="btnSave" onclick="saveGroup()">Hifadhi</button>
+    <h3 style="margin-top:0;color:#00ff00" id="popupTitle">Tengeneza Group</h3>
+    <input id="inputJina" placeholder="Jina">
+    <input id="inputMaelezo" placeholder="Maelezo">
+    <button class="btnSave" onclick="savePopup()">Hifadhi</button>
     <button class="btnCancel" onclick="closePopup()">Ghairi</button>
   </div>
 </div>
@@ -87,18 +130,52 @@ var cfg={apiKey:"AIzaSyANpw55jBwxMyf6AC1_y7m6idNYhLPyka0",authDomain:"nyumba-6wa
 firebase.initializeApp(cfg);
 var db=firebase.database();
 
-var jina = localStorage.getItem("nyumba6wazi_jina");
-if(!jina){
-  jina = prompt("Weka jina lako:");
-  if(!jina || jina.trim()=="") jina = "Mgeni" + Math.floor(Math.random()*1000);
-  localStorage.setItem("nyumba6wazi_jina", jina);
+var jina="", groupIdSasa="", chatRef, onlineRef, typingRef;
+var mediaRecorder, audioChunks = [];
+var popupType = "group";
+
+// LOGIN
+function login(){
+  jina = document.getElementById("loginJina").value;
+  var pass = document.getElementById("loginPass").value;
+  if(jina && pass){
+    localStorage.setItem("nyumba6wazi_jina", jina);
+    localStorage.setItem("nyumba6wazi_pass", pass);
+    document.getElementById("loginScreen").style.display="none";
+    document.getElementById("home").style.display="block";
+    initApp();
+  }
+}
+if(localStorage.getItem("nyumba6wazi_jina")){
+  jina = localStorage.getItem("nyumba6wazi_jina");
+  document.getElementById("loginScreen").style.display="none";
+  document.getElementById("home").style.display="block";
+  initApp();
 }
 
-var groupIdSasa = "";
-var chatRef, onlineRef, typingRef;
-var mediaRecorder, audioChunks = [];
+function toggleTheme(){
+  document.body.classList.toggle("light");
+}
 
-// EMOJIS
+function showTab(tab){
+  document.querySelectorAll(".tab button").forEach(b=>b.classList.remove("active"));
+  if(tab=="chats"){
+    document.querySelector(".tab button:nth-child(1)").classList.add("active");
+    document.getElementById("groupList").style.display="block";
+    document.getElementById("statusList").style.display="none";
+  }else{
+    document.querySelector(".tab button:nth-child(2)").classList.add("active");
+    document.getElementById("groupList").style.display="none";
+    document.getElementById("statusList").style.display="block";
+    loadStatus();
+  }
+}
+
+function initApp(){
+  tengenezaGroupsMfano();
+  loadGroups();
+}
+
 var emojis = ["😂","❤️","👍","🔥","😭","🙏","😎","💯","🤣","😍"];
 function toggleEmoji(){
   var p = document.getElementById("emojiPanel");
@@ -109,17 +186,11 @@ function toggleEmoji(){
     });
   }
 }
-function addEmoji(e){
-  document.getElementById("m").value += e;
-  toggleEmoji();
-}
+function addEmoji(e){document.getElementById("m").value += e;toggleEmoji()}
 
 function tengenezaGroupsMfano(){
   db.ref("groups/nyumba6wazi").set({jina:"NYUMBA 6WAZI", maelezo:"Group Kuu ya Marafiki"});
-  db.ref("groups/wakuru").set({jina:"WAKURU GEN", maelezo:"Watu wa mtaani"});
-  db.ref("groups/family").set({jina:"FAMILY", maelezo:"Nyumbani"});
 }
-setTimeout(tengenezaGroupsMfano, 1000);
 
 function loadGroups(){
   db.ref("groups").on("value", s=>{
@@ -128,23 +199,41 @@ function loadGroups(){
       var data = g.val() || {};
       if(data.jina){
         html += `<div class="group" onclick="funguaGroup('${g.key}')">
-          <b>${data.jina}</b>
-          <small>${data.maelezo}</small>
+          <div class="pfp">${data.jina[0]}</div>
+          <div><b>${data.jina}</b><small>${data.maelezo}</small></div>
         </div>`;
       }
     });
-    html += `<div class="addGroup" onclick="openPopup()">+ Tengeneza Group Mpya</div>`;
+    html += `<div class="addGroup" onclick="openPopup('group')">+ Tengeneza Group Mpya</div>`;
     document.getElementById("groupList").innerHTML = html;
   });
 }
-loadGroups();
 
-function openPopup(){document.getElementById("popup").style.display="flex"}
+function loadStatus(){
+  db.ref("status").on("value", s=>{
+    var html = `<div class="status" onclick="wekaStatus()"><div class="pfp">+</div><div><b>Stato Yangu</b><small>Bofya kuongeza</small></div></div>`;
+    s.forEach(st=>{
+      html += `<div class="status"><div class="pfp">${st.key[0]}</div><div><b>${st.key}</b><small>Status mpya</small></div></div>`;
+    });
+    document.getElementById("statusList").innerHTML = html;
+  });
+}
+
+function wekaStatus(){
+  var status = prompt("Andika Status yako:");
+  if(status) db.ref("status/"+jina).set({text:status, time:Date.now()});
+}
+
+function openPopup(type){
+  popupType = type;
+  document.getElementById("popup").style.display="flex";
+  document.getElementById("popupTitle").innerText = type=="group"?"Tengeneza Group":"Weka Status";
+}
 function closePopup(){document.getElementById("popup").style.display="none"}
-function saveGroup(){
+function savePopup(){
   var jinaG = document.getElementById("inputJina").value;
   var maelezo = document.getElementById("inputMaelezo").value;
-  if(jinaG && maelezo){
+  if(jinaG && maelezo && popupType=="group"){
     var id = jinaG.toLowerCase().replace(/ /g,"");
     db.ref("groups/"+id).set({jina:jinaG, maelezo:maelezo});
     closePopup();
@@ -176,7 +265,10 @@ function rudiHome(){
   if(typingRef) typingRef.off();
   document.getElementById("home").style.display="block";
   document.getElementById("chatScreen").style.display="none";
+  document.getElementById("statusScreen").style.display="none";
 }
+
+function pigaSimu(){ alert("Voice Call inakuja V7.1 😂 Kwa sasa tumia WhatsApp") }
 
 var typingTimeout;
 function typing(){
@@ -207,11 +299,7 @@ function loadChat(){
   });
 }
 
-function futaMsg(key){
-  if(confirm("Una uhakika kufuta meseji hii?")){
-    db.ref("groups/"+groupIdSasa+"/chat/"+key).remove();
-  }
-}
+function futaMsg(key){db.ref("groups/"+groupIdSasa+"/chat/"+key).remove()}
 
 function tumaPicha(e){
   var file=e.target.files[0]; if(!file) return;
@@ -222,7 +310,6 @@ function tumaPicha(e){
   reader.readAsDataURL(file);
 }
 
-// VOICE NOTE
 function startRecord(){
   navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
     mediaRecorder = new MediaRecorder(stream);
@@ -254,4 +341,4 @@ function tuma(){
 }
 </script>
 </body>
-    </html>
+</html>
